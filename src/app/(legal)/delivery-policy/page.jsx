@@ -93,8 +93,8 @@ const DeliveryPage = () => {
             allowing you to track the progress of your delivery.
           </li>
           <li className="li">
-            You can track your order through the courier's website, and you will
-            receive updates on the estimated delivery date.
+            You can track your order through the courier&apos;s website, and you
+            will receive updates on the estimated delivery date.
           </li>
         </ul>
 
@@ -115,7 +115,7 @@ const DeliveryPage = () => {
           </li>
           <li className="li">
             Remote Areas: Some rural or remote areas may experience longer
-            delivery times, depending on the courier's coverage.
+            delivery times, depending on the courier&apos;s coverage.
           </li>
         </ul>
 
@@ -135,10 +135,10 @@ const DeliveryPage = () => {
         </p>
         <ul className="mb-7">
           <li className="li">
-            If your package is marked as "delivered" but you have not received
-            it, please first check with neighbors or your local postal service.
-            We are not responsible for lost or stolen packages once they are
-            marked as delivered by the carrier.
+            If your package is marked as &quot;delivered&quot; but you have not
+            received it, please first check with neighbors or your local postal
+            service. We are not responsible for lost or stolen packages once
+            they are marked as delivered by the carrier.
           </li>
           <li className="li">
             If you believe your package was lost, please contact our Customer
