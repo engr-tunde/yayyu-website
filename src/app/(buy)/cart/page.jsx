@@ -102,7 +102,7 @@ const CartPage = () => {
 
   useEffect(() => {
     calculateTotalFee();
-  }, [cartUpdated, itemsInCart]);
+  }, [cartUpdated, itemsInCart, calculateTotalFee]);
 
   return (
     <div className="pt-[70px] relative bg-transparent">

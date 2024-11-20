@@ -51,7 +51,7 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     calculateTotalFee();
-  }, [itemsInCart]);
+  }, [itemsInCart, calculateTotalFee]);
 
   const initialValues = {};
   const validationSchema = {};

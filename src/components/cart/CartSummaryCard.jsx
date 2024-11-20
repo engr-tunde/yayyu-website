@@ -13,7 +13,9 @@ const CartSummaryCard = ({
       <h1 className="text-lg uppercase font-semibold">Cart summary</h1>
       <div className="h-[1.5px] w-full bg-[#e7e7e7d3] my-1"></div>
       <div className="flex justify-between items-end mb-2">
-        <span className="text-sm">Item's total ({itemsInCart.length})</span>
+        <span className="text-sm">
+          Item&apos;s total ({itemsInCart.length})
+        </span>
         <span className="font-medium">{formatter(totalPrice)}</span>
       </div>
       <div className="flex justify-between items-end mb-2">

@@ -179,7 +179,7 @@ const SingleItemPage = ({ params, searchParams }) => {
   };
   useEffect(() => {
     fecthThisItemsInTheCart();
-  }, [itemsInCart, cartUpdated, setItemsInCart]);
+  }, [itemsInCart, cartUpdated, setItemsInCart, fecthThisItemsInTheCart]);
 
   return (
     <div className="top-[100px] relative">
