@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white text-black;
+}
+
+.menu-link {
+  @apply text-yayyuGrey hover:text-yayyuYellow  uppercase;
+}
+.active {
+  @apply text-yayyuYellow;
+}
+.container {
+  @apply max-w-[1100px] mx-auto px-5 md:px-10 lg:px-0;
+}
+a {
+  @apply hover:text-yayyuYellow;
+}
+.pageHeader {
+  background-image: url("/images/header.jpeg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.about-p {
+  @apply mb-4 text-[15px] lg:text-lg leading-5 lg:leading-6;
+}
+.dark-btn {
+  @apply bg-black text-white text-sm text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer;
+}
+.submit-btn {
+  @apply text-sm text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer;
+}
+.transparent-btn {
+  @apply bg-[#F7F7F7] border-black border-[2px] text-black text-sm text-center hover:bg-black hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer;
+}
+.home-item-img {
+  @apply h-[300px] lg:h-[350px] hover:scale-90 duration-500 ease-in;
+}
+.shop-item-img {
+  @apply h-[150px] lg:h-[300px] hover:scale-90 duration-500 ease-in;
+}
+.plus-btn {
+  @apply cursor-pointer bg-yayyuYellow hover:bg-black hover:text-yayyuYellow font-semibold px-3 h-full flex items-center justify-center rounded-md shadow-md shadow-gray-800;
+}
+
+input,
+select,
+.pass-field {
+  height: 46px;
+  padding: 2px 15px;
+  font-size: 12px !important;
+  font-weight: 300;
+  border: 2px solid #dedede;
+  color: #000;
+}
+
+.paragraph {
+  @apply text-sm mb-6 leading-[1.5rem];
+}
+.li {
+  list-style-type: disc;
+  @apply ml-10 text-sm mb-2 leading-[1.5rem];
+}
+ol .li {
+  list-style: georgian;
+  @apply ml-10 text-sm mb-2 leading-[1.5rem];
+}
