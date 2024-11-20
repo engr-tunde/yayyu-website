@@ -67,7 +67,7 @@ const PrivacyPage = () => {
           </li>
           <li className="li">
             Marketing: To send you promotional emails, newsletters, and special
-            offers (if you've subscribed to receive them). You can opt out of
+            offers (if you have subscribed to receive them). You can opt out of
             marketing emails at any time by clicking the “unsubscribe” link in
             our emails.
           </li>
@@ -179,7 +179,7 @@ const PrivacyPage = () => {
           sites you visit.
         </p>
 
-        <p className="text-md mb-2 font-semibold">7. Children's Privacy</p>
+        <p className="text-md mb-2 font-semibold">7. Children&apos;s Privacy</p>
         <p className="paragraph">
           Our website is not intended for children under the age of 13. We do
           not knowingly collect personal information from children under 13. If

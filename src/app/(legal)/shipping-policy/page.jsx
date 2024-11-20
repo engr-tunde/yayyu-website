@@ -94,7 +94,7 @@ const ShippingPage = () => {
         <ul className="mb-7">
           <li className="li">
             Once your order ships, you will receive a tracking number via email.
-            You can track the progress of your order through the courier's
+            You can track the progress of your order through the courier&apos;s
             website.
           </li>
           <li className="li">
@@ -120,7 +120,7 @@ const ShippingPage = () => {
           <li className="li">
             We are not responsible for lost or stolen packages once the tracking
             shows they have been delivered. However, if your package is marked
-            as delivered but you haven't received it, please contact the
+            as delivered but you haven&apos;t received it, please contact the
             shipping carrier to initiate an investigation.
           </li>
           <li className="li">

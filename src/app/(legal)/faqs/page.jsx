@@ -14,8 +14,8 @@ const FAQsPage = () => {
         <p className="paragraph">
           Welcome to our FAQ section! Here, you will find answers to the most
           common questions about our products, ordering process, shipping,
-          returns, and more. If you don't find the answer you are looking for,
-          feel free to contact our customer service team at{" "}
+          returns, and more. If you don&apos;t find the answer you are looking
+          for, feel free to contact our customer service team at
           {process.env.APP_EMAIL}.
         </p>
 
@@ -38,7 +38,8 @@ const FAQsPage = () => {
             your preferred payment method.
           </li>
           <li className="li">
-            Review your order and click "Place Order" to complete your purchase.
+            Review your order and click &quot;Place Order&quot; to complete your
+            purchase.
           </li>
         </ul>
 
@@ -64,10 +65,11 @@ const FAQsPage = () => {
         </p>
         <p className="text-sm mb-7 leading-[1.5rem]">
           Once your order ships, you will receive an email with a tracking
-          number and a link to the carrier's website. You can use this to track
-          the status of your delivery in real time. <br />
-          If you haven't received tracking information within 3 business days of
-          placing your order, please reach out to our customer service team.
+          number and a link to the carrier&apos;s website. You can use this to
+          track the status of your delivery in real time. <br />
+          If you haven&apos;t received tracking information within 3 business
+          days of placing your order, please reach out to our customer service
+          team.
         </p>
 
         <p className="text-md mb-2 font-semibold">
@@ -153,7 +155,7 @@ const FAQsPage = () => {
           Yes! We ship to most countries worldwide. International orders may
           take between 7-14 business days to arrive, depending on the
           destination. Additional customs fees, import duties, and taxes may
-          apply depending on your country's regulations and are the
+          apply depending on your country&apos;s regulations and are the
           responsibility of the customer.
         </p>
 
@@ -161,18 +163,18 @@ const FAQsPage = () => {
           10. I entered the wrong shipping address. Can I change it?
         </p>
         <p className="text-sm mb-7 leading-[1.5rem]">
-          If you realize you've entered an incorrect address, please contact us
-          immediately at {process.env.APP_EMAIL}. If your order hasn't been
-          shipped yet, we can make the necessary corrections. Once your order
-          has shipped, we are unable to modify the address.
+          If you realize you&apos;ve entered an incorrect address, please
+          contact us immediately at {process.env.APP_EMAIL}. If your order
+          hasn&apos;t been shipped yet, we can make the necessary corrections.
+          Once your order has shipped, we are unable to modify the address.
         </p>
 
         <p className="ml-5 text-md mb-2 font-semibold">
-          11. My order hasn't arrived yet. What should I do?
+          11. My order hasn&apos;t arrived yet. What should I do?
         </p>
         <p className="paragraph">
-          If your order hasn't arrived within the expected delivery timeframe,
-          please:
+          If your order hasn&apos;t arrived within the expected delivery
+          timeframe, please:
         </p>
         <ul className="mb-7">
           <li className="li">
@@ -184,7 +186,7 @@ const FAQsPage = () => {
           </li>
           <li className="li">
             Contact our customer service team at {process.env.APP_EMAIL} for
-            assistance if you still haven't received your order after the
+            assistance if you still haven&apos;t received your order after the
             estimated delivery date.
           </li>
         </ul>
