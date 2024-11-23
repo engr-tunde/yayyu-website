@@ -115,7 +115,7 @@ const LoginPage = () => {
 
               <div className="flex justify-center items-center gap-2">
                 <div className="text-sm items-center">
-                  Don't have an account yet?
+                  Don&apos;t have an account yet?
                 </div>
                 <Link href="/register" className="font-semibold text-lg">
                   Signup instead

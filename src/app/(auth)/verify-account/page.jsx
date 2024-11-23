@@ -95,7 +95,7 @@ const VerifyAccountPage = (params) => {
 
               <div className="flex justify-between mt-10 mb-7 items-center gap-5">
                 <div className="text-sm items-center font-medium">
-                  Didn't receive the OTP?
+                  Didn&apos;t receive the OTP?
                 </div>
 
                 {seconds < 1 ? (
