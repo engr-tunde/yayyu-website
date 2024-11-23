@@ -27,7 +27,7 @@ const InputField = ({
       className={full ? `col-span-2 ${className}` : `col-span-1 ${className}`}
     >
       {type === "password" ? (
-        <div className="pass-field border rounded-md w-[100%] bg-transparent flex items-center gap-1 pe-1">
+        <div className="pass-field border rounded-md w-[100%] bg-transparent flex justify-between items-center gap-1 pe-2">
           <input
             value={value}
             placeholder={placeholder}
@@ -35,7 +35,7 @@ const InputField = ({
             onBlur={handleBlur(name)}
             type={showPassword ? "text" : "password"}
             disabled={disabled}
-            className="border-0 w-[90%] bg-transparent p-3 text-[14px] font-[400]"
+            className="border-0 w-full bg-transparent py-4 text-[14px] font-[400]"
             autoComplete="off"
             {...rest}
           />
@@ -49,7 +49,7 @@ const InputField = ({
           onBlur={handleBlur(name)}
           type={type}
           disabled={disabled}
-          className="border rounded-md w-[100%] bg-transparent p-3 text-[14px] font-[400]"
+          className="border rounded-md w-[100%] bg-transparent px-3 py-5 text-[14px] font-[400]"
           autoComplete="off"
           {...rest}
         />

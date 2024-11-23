@@ -176,7 +176,7 @@ const DeliveryPage = () => {
         <p className="text-md mb-2 font-semibold">Contact Us</p>
         <p className="text-sm mb-2 leading-[1.5rem]">
           If you have any questions or need assistance with your order, feel
-          free to contact our Customer Service team at {process.env.APP_PHONE}
+          free to contact our Customer Service team at {process.env.APP_PHONE}{" "}
           or {process.env.APP_EMAIL}. We are here to help!
         </p>
       </div>

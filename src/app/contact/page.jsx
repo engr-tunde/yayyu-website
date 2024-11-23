@@ -4,6 +4,7 @@ import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
 import PageHeader from "@/components/globals/PageHeader";
 import CustomFormik from "@/lib/utils/CustomFormik";
+import Link from "next/link";
 
 const page = () => {
   const initialValues = {};
@@ -17,7 +18,7 @@ const page = () => {
     <div className="h-full top-[100px]">
       <PageHeader title="Contact Us" />
       <div className="container py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="col-span-1">
             <CustomFormik
               initialValues={initialValues}
@@ -45,6 +46,35 @@ const page = () => {
                 className="mt-6 w-full submit-btn py-4"
               />
             </CustomFormik>
+          </div>
+          <div className="col-span-1 flex flex-col gap-2 justify-center">
+            <div className="text-sm lg:mt-6 mb-3">
+              If you have inquiries or need assistance, do not hesitate to chat
+              with us. We are available Monday to Sunday (8am to 7pm). Public
+              Holidays between 9am and 5pm.
+            </div>
+            <div className="">
+              Address:{" "}
+              <span className="font-medium">{process.env.APP_ADDRESS}</span>
+            </div>
+            <div className="">
+              Phone number:{" "}
+              <Link
+                href={`tel:${process.env.APP_PHONE}`}
+                className="font-medium"
+              >
+                {process.env.APP_PHONE}
+              </Link>
+            </div>
+            <div className="">
+              Email address:{" "}
+              <Link
+                href={`Address::${process.env.APP_EMAIL}`}
+                className="font-medium"
+              >
+                {process.env.APP_EMAIL}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

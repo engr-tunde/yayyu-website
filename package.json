@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^1.7.7",
     "core-js": "^3.39.0",
     "core-js-bundle": "^3.39.0",
     "expired-storage": "^1.0.2",
@@ -17,7 +18,9 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.3.0",
+    "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.6",
+    "swr": "^2.2.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
