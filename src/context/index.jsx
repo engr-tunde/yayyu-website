@@ -14,14 +14,14 @@ const AppProvider = ({ children }) => {
     console.log("window", window);
     console.log("type of window", typeof window);
     if (!ISSERVER) {
-      // let cart = expiredStorage.getItem("cart");
-      let cart = window?.localStorage.getItem("cart");
+      let cart = expiredStorage.getItem("cart");
+      // let cart = window?.localStorage.getItem("cart");
       if (cart == null || cart == undefined || cart?.length < 5) {
         cart = new Array();
         let updatedItems = JSON.stringify(cart);
         // if (!ISSERVER) {
-        // expiredStorage.setItem("cart", updatedItems, 36000);
-        window?.localStorage.setItem("cart", updatedItems);
+        expiredStorage.setItem("cart", updatedItems, 36000);
+        // window?.localStorage.setItem("cart", updatedItems);
         console.log("cart", cart);
         return cart;
         // }
@@ -37,9 +37,9 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     let item = JSON.stringify(itemsInCart);
-    // expiredStorage.setItem("cart", item, 36000);
-    window?.localStorage.setItem("cart", item);
-  }, [itemsInCart, setItemsInCart]);
+    expiredStorage.setItem("cart", item, 36000);
+    // window?.localStorage.setItem("cart", item);
+  }, [itemsInCart]);
 
   return (
     <AppContext.Provider

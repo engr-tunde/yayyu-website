@@ -77,5 +77,9 @@ ol .li {
 }
 
 .dashboard-menu-link {
-  @apply flex gap-4 bg-transparent text-black text-sm hover:bg-[#cfcfcf] hover:text-black p-3 duration-100 ease-in;
+  @apply flex gap-4 text-black text-sm hover:bg-[#E9E7E7] hover:text-black px-3 py-4 duration-100 ease-in;
+}
+
+.dashboard-active {
+  @apply bg-[#E9E7E7] border-r-4 border-yayyuYellow font-medium;
 }

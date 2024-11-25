@@ -1,6 +1,10 @@
 import PageHeader from "@/components/globals/PageHeader";
 import React from "react";
 
+export const metadata = {
+  title: "About Us",
+};
+
 const AboutPage = () => {
   return (
     <div className="h-full top-[100px]">

@@ -1,10 +1,13 @@
 import { Inter, DM_Sans } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/globals/NavBar";
-import Footer from "@/components/globals/Footer";
-import AppProvider from "@/context";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import dynamic from "next/dynamic";
+
+const AppProvider = dynamic(() => import("@/context"), {
+  ssr: false,
+});
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -21,22 +24,23 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+      </head>
       <body className={dm_sans.className}>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         <AppProvider>
-          <NavBar />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           {children}
-          <Footer />
         </AppProvider>
       </body>
     </html>

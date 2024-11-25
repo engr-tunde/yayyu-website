@@ -17,43 +17,44 @@ const LoginPage = () => {
 
   const handleSubmit = async (values) => {
     console.log("values", values);
-    const response = await userLogin(values);
-    console.log(response);
-    try {
-      if (response.status === 200) {
-        const data = response.data;
-        if (data.message === "Unverified email") {
-          console.log(data.userId);
-          errorNotification("Account not yet verified.");
-          const otpRes = await resendVerificationOTP({ userId: data.userId });
-          setTimeout(() => {
-            if (otpRes.status === 200) {
-              const otpData = response.data;
-              successNotification(
-                "OTP has been sent to your email address. Provide the OTP in the next screen"
-              );
-              setTimeout(
-                () =>
-                  router.push({
-                    pathname: "/verify-account",
-                    query: { userId: otpData.userId },
-                  }),
-                2000
-              );
-            } else {
-              errorNotification(otpRes?.data?.error);
-            }
-          }, 1000);
-        } else {
-          successNotification(data.message);
-          setTimeout(() => router.push("/dashboard"), 1500);
-        }
-      } else {
-        errorNotification(response?.data?.error);
-      }
-    } catch (error) {
-      errorNotification(error?.response?.data?.error);
-    }
+    router.push("/dashboard");
+    // const response = await userLogin(values);
+    // console.log(response);
+    // try {
+    //   if (response.status === 200) {
+    //     const data = response.data;
+    //     if (data.message === "Unverified email") {
+    //       console.log(data.userId);
+    //       errorNotification("Account not yet verified.");
+    //       const otpRes = await resendVerificationOTP({ userId: data.userId });
+    //       setTimeout(() => {
+    //         if (otpRes.status === 200) {
+    //           const otpData = response.data;
+    //           successNotification(
+    //             "OTP has been sent to your email address. Provide the OTP in the next screen"
+    //           );
+    //           setTimeout(
+    //             () =>
+    //               router.push({
+    //                 pathname: "/verify-account",
+    //                 query: { userId: otpData.userId },
+    //               }),
+    //             2000
+    //           );
+    //         } else {
+    //           errorNotification(otpRes?.data?.error);
+    //         }
+    //       }, 1000);
+    //     } else {
+    //       successNotification(data.message);
+    //       setTimeout(() => router.push("/dashboard"), 1500);
+    //     }
+    //   } else {
+    //     errorNotification(response?.data?.error);
+    //   }
+    // } catch (error) {
+    //   errorNotification(error?.response?.data?.error);
+    // }
   };
 
   return (

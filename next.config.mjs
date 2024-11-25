@@ -6,9 +6,9 @@ const nextConfig = {
     APP_PHONE: process.env.APP_PHONE,
     APP_ADDRESS: process.env.APP_ADDRESS,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
 };
 
 export default nextConfig;

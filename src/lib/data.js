@@ -481,3 +481,36 @@ export const shippingData = [
     amount: 25000,
   },
 ];
+
+export const ordersData = [
+  {
+    _id: "35dhrtrtGYe736y",
+    img: "/images/cloth1.png",
+    order_title: "Adire Attire XL Blue",
+    order_qty: 5,
+    items_total: 150000,
+    shipping: 1500,
+    total_paid: 151500,
+    created_at: "2024-11-16T17:13:01.561+00:00",
+  },
+  {
+    _id: "35dhrtrtGYe736y",
+    img: "/images/cloth1.png",
+    order_title: "Ladies Suit LG Green",
+    order_qty: 3,
+    items_total: 85000,
+    shipping: 1500,
+    total_paid: 86500,
+    created_at: "2024-11-16T17:13:01.561+00:00",
+  },
+  {
+    _id: "35dhrtrtGYe736y",
+    img: "/images/cloth1.png",
+    order_title: "Ladies Suit XL Red",
+    order_qty: 8,
+    items_total: 150000,
+    shipping: 1500,
+    total_paid: 151500,
+    created_at: "2024-11-16T17:13:01.561+00:00",
+  },
+];

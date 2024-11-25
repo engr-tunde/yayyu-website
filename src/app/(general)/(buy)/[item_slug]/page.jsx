@@ -30,6 +30,7 @@ const SingleItemPage = ({ params, searchParams }) => {
 
   // const data = JSON.parse(searchParams.data);
   const item_slug = params.item_slug;
+  console.log("itemsData", itemsData);
   const data = itemsData.filter((item) => item.item_slug === item_slug)[0];
   console.log("data", data);
   let rating = 0;
@@ -179,7 +180,7 @@ const SingleItemPage = ({ params, searchParams }) => {
   };
   useEffect(() => {
     fecthThisItemsInTheCart();
-  }, [itemsInCart, cartUpdated, setItemsInCart, fecthThisItemsInTheCart]);
+  }, [itemsInCart, cartUpdated, setItemsInCart]);
 
   return (
     <div className="top-[100px] relative">

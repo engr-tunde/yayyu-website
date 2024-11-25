@@ -123,7 +123,7 @@ const NavBar = () => {
           </Link>
 
           <div className="w-[20%] lg:w-[45%] flex items-center justify-end gap-4">
-            <Link href="/" className="hidden lg:block flex-col gap-0">
+            <Link href="/login" className="hidden lg:block flex-col gap-0">
               <img src="/icons/account.svg" alt="" />
             </Link>
             <a href="/" className="hidden lg:block flex-col gap-0">
