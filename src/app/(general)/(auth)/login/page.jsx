@@ -17,7 +17,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (values) => {
     console.log("values", values);
-    router.push("/dashboard");
+    router.push("/orders");
     // const response = await userLogin(values);
     // console.log(response);
     // try {
