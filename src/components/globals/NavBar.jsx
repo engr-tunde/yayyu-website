@@ -5,9 +5,12 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const NavBar = () => {
+  const path = window.location.pathname.split("/");
+  const pathname = path[path.length - 1];
+  const [activeLink, setActiveLink] = useState(pathname);
   const [nav, setNav] = useState(false);
   const [shopDropDown, setShopDropDown] = useState(false);
-  const [activeLink, setActiveLink] = useState("home");
+  // const [activeLink, setActiveLink] = useState("home");
 
   const handleNavToggle = () => {
     setNav(!nav);
@@ -21,8 +24,9 @@ const NavBar = () => {
     setShopDropDown(false);
   };
 
-  const { itemsInCart } = useAppContext();
+  const { itemsInCart, itemsInWishList } = useAppContext();
   const cartCount = itemsInCart.length ? itemsInCart.length : 0;
+  const wishListCount = itemsInWishList.length ? itemsInWishList.length : 0;
 
   return (
     <>
@@ -31,10 +35,8 @@ const NavBar = () => {
           <div className="w-[20%] lg:w-[45%] hidden lg:flex gap-10 text-[16px] font-medium uppercase items-center">
             <Link
               href="/"
-              className={
-                activeLink === "home" ? "active menu-link" : "menu-link"
-              }
-              onClick={() => onUpdateActiveLink("home")}
+              className={activeLink === "" ? "active menu-link" : "menu-link"}
+              onClick={() => onUpdateActiveLink("")}
             >
               Home
             </Link>
@@ -50,7 +52,9 @@ const NavBar = () => {
             <div
               href="/shop"
               className={
-                activeLink === "shop"
+                activeLink === "shop" ||
+                activeLink === "cart" ||
+                activeLink === "checkout"
                   ? "active menu-link cursor-pointer flex gap-1"
                   : "menu-link cursor-pointer flex gap-1 "
               }
@@ -123,11 +127,17 @@ const NavBar = () => {
           </Link>
 
           <div className="w-[20%] lg:w-[45%] flex items-center justify-end gap-4">
-            <Link href="/login" className="hidden lg:block flex-col gap-0">
+            <Link href="/login" className="hidden lg:block flex-col gap-0 ">
               <img src="/icons/account.svg" alt="" />
             </Link>
-            <a href="/" className="hidden lg:block flex-col gap-0">
+            <a
+              href="/wish-list"
+              className="hidden lg:block flex-col gap-0 relative"
+            >
               <img src="/icons/like.svg" alt="" />
+              <div className="bg-red-600 w-4 h-4 flex justify-center items-center rounded-full absolute -right-3 -top-2">
+                <span className="text-[10px] text-white"> {wishListCount}</span>
+              </div>
             </a>
             <Link href="/" className="hidden lg:block flex-col gap-0">
               <img src="/icons/search.svg" alt="" />

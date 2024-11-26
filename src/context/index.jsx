@@ -8,44 +8,53 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
   const expiredStorage = new ExpiredStorage();
   const ISSERVER = typeof window === "undefined";
-
-  console.log("type of window", typeof window);
   const getCartItems = () => {
-    console.log("window", window);
-    console.log("type of window", typeof window);
     if (!ISSERVER) {
       let cart = expiredStorage.getItem("cart");
-      // let cart = window?.localStorage.getItem("cart");
       if (cart == null || cart == undefined || cart?.length < 5) {
         cart = new Array();
         let updatedItems = JSON.stringify(cart);
-        // if (!ISSERVER) {
         expiredStorage.setItem("cart", updatedItems, 36000);
-        // window?.localStorage.setItem("cart", updatedItems);
-        console.log("cart", cart);
         return cart;
-        // }
       } else {
         cart = JSON.parse(cart);
-        console.log("cart", cart);
         return cart;
+      }
+    }
+  };
+  const getWishListItems = () => {
+    if (!ISSERVER) {
+      let wishList = expiredStorage.getItem("wishList");
+      if (wishList == null || wishList == undefined || wishList?.length < 5) {
+        wishList = new Array();
+        let updatedItems = JSON.stringify(wishList);
+        expiredStorage.setItem("wishList", updatedItems);
+        return wishList;
+      } else {
+        wishList = JSON.parse(wishList);
+        return wishList;
       }
     }
   };
 
   const [itemsInCart, setItemsInCart] = useState(getCartItems);
+  const [itemsInWishList, setItemsInWishList] = useState(getWishListItems);
 
   useEffect(() => {
     let item = JSON.stringify(itemsInCart);
     expiredStorage.setItem("cart", item, 36000);
-    // window?.localStorage.setItem("cart", item);
-  }, [itemsInCart]);
+
+    let wishList = JSON.stringify(itemsInWishList);
+    expiredStorage.setItem("wishList", wishList);
+  }, [itemsInCart, itemsInWishList]);
 
   return (
     <AppContext.Provider
       value={{
         itemsInCart,
         setItemsInCart,
+        itemsInWishList,
+        setItemsInWishList,
       }}
     >
       {children}

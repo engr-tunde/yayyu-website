@@ -1,6 +1,7 @@
 "use client";
 
 import PageHeader from "@/components/globals/PageHeader";
+import PageHeaderTwo from "@/components/globals/PageHeaderTwo";
 import { useAppContext } from "@/context";
 import { itemsData, reviewsData } from "@/lib/data";
 import {
@@ -22,7 +23,8 @@ const SingleItemPage = ({ params, searchParams }) => {
   const [selectedColor, setSelectedColor] = useState();
   const [currentTap, setCurrentTap] = useState("description");
   const [sizeAndPrice, setSizeAndPrice] = useState({});
-  const { itemsInCart, setItemsInCart } = useAppContext();
+  const { itemsInCart, setItemsInCart, itemsInWishList, setItemsInWishList } =
+    useAppContext();
   const [showCart, setShowCart] = useState(false);
   const [thisProductInCart, setThisProductInCart] = useState([]);
   const [cartUpdated, setCartUpdated] = useState(false);
@@ -30,9 +32,7 @@ const SingleItemPage = ({ params, searchParams }) => {
 
   // const data = JSON.parse(searchParams.data);
   const item_slug = params.item_slug;
-  console.log("itemsData", itemsData);
   const data = itemsData.filter((item) => item.item_slug === item_slug)[0];
-  console.log("data", data);
   let rating = 0;
 
   // For related products
@@ -53,6 +53,42 @@ const SingleItemPage = ({ params, searchParams }) => {
 
   const handleSelectColor = (color) => {
     setSelectedColor(color);
+  };
+
+  const handleAddToWishList = (item) => {
+    let currentWishList = expiredStorage.getItem("wishList");
+    currentWishList = JSON.parse(currentWishList);
+
+    const itemInWishList = currentWishList.filter(
+      (it) => it.item_id === item._id
+    );
+    console.log("itemInWishList", itemInWishList);
+    if (itemInWishList.length) {
+      errorNotification("Item already exists in your Wish List");
+    } else {
+      let itemToWishList = {
+        item_id: item._id,
+        item_name: item.item_name,
+        img: item.img,
+        item_slug: item.item_slug,
+        original_price: sizeAndPrice.size
+          ? sizeAndPrice.original_price
+          : data.original_price,
+        new_price: sizeAndPrice.size ? sizeAndPrice.new_price : data.new_price,
+        size: data.sizes ? sizeAndPrice.size : "",
+        color: data.colors ? selectedColor : "",
+      };
+      currentWishList.push(itemToWishList);
+      let updatedItems = JSON.stringify(currentWishList);
+      expiredStorage.setItem("wishList", updatedItems);
+      setItemsInWishList(currentWishList);
+      forceUpdate();
+      successNotification(
+        data.sizes
+          ? `1 ${item.item_name} - size ${sizeAndPrice.size} added to your Wish List`
+          : `1 ${item.item_name} added to your Wish List`
+      );
+    }
   };
 
   const handleAddToCart = (item) => {
@@ -183,8 +219,8 @@ const SingleItemPage = ({ params, searchParams }) => {
   }, [itemsInCart, cartUpdated, setItemsInCart]);
 
   return (
-    <div className="top-[100px] relative">
-      <PageHeader title={`Home / ${data.item_name}`} />
+    <div className="top-[20px] lg:top-[0px] relative">
+      <PageHeaderTwo title={`Home / ${data.item_name}`} />
       <div className="container py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-28 gap-y-14">
           <div className="col-span-1">
@@ -204,7 +240,7 @@ const SingleItemPage = ({ params, searchParams }) => {
             </div>
           </div>
           <div className="col-span-1 flex flex-col gap-3">
-            <h2 className="uppercase text-2xl">{data.item_name}</h2>
+            <h2 className="uppercase text-xl lg:text-2xl">{data.item_name}</h2>
             <div className="flex gap-5 mb-1">
               <div className="flex items-center gap-1">
                 {Array.from({ length: rating }, (_, index) => (
@@ -434,7 +470,10 @@ const SingleItemPage = ({ params, searchParams }) => {
                 <img src="/icons/bag-white.svg" alt="" />
               </div>
 
-              <div className="py-3 px-5 bg-[#F7F7F7] border-[1px] border-[#f0f0f0] hover:bg-yayyuYellow text-xl flex gap-2 cursor-pointer">
+              <div
+                onClick={() => handleAddToWishList(data)}
+                className="py-3 px-5 bg-[#F7F7F7] border-[1px] border-[#f0f0f0] hover:bg-yayyuYellow text-xl flex gap-2 cursor-pointer"
+              >
                 <img src="/icons/like.svg" alt="" />
               </div>
             </div>

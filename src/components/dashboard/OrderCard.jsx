@@ -3,7 +3,7 @@ import React from "react";
 
 const OrderCard = ({ item }) => {
   return (
-    <div className="p-4 border-[#D4D4D6] border-[1.5px] flex flex-col lg:flex-row justify-between gap-2">
+    <div className="p-[14px] border-[#D4D4D6] border-[1.5px] flex flex-col lg:flex-row justify-between gap-2">
       <div className="flex items-center justify-between gap-2">
         <div className="relative h-[70px] w-[70px] border-[1.5px] border-[#d7d7d7] px-[2px] rounded-md">
           <img src={item.img} alt="" className="h-full" />
@@ -13,7 +13,7 @@ const OrderCard = ({ item }) => {
         </div>
         <div className="flex flex-col items-end lg:items-start">
           <p className="font-medium text-lg">{item.order_title}</p>
-          <p className="text-sm">
+          <p className="text-sm text-gray-600">
             Made On:{" "}
             <span className="font-medium">
               {dateFormatter(item.created_at)}
@@ -21,18 +21,19 @@ const OrderCard = ({ item }) => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col text-gray-600">
         <p className="text-sm flex justify-between items-end gap-4">
           Purchase total:{" "}
-          <span className=" text-md">{formatter(item.items_total)}</span>
+          <span className="">{formatter(item.items_total)}</span>
         </p>
         <p className="text-sm flex justify-between items-end gap-4">
-          shipping cost:{" "}
-          <span className=" text-md">{formatter(item.shipping)}</span>
+          shipping cost: <span className="">{formatter(item.shipping)}</span>
         </p>
         <p className="text-sm flex justify-between items-end gap-4">
           Total Paid:{" "}
-          <span className=" text-lg">{formatter(item.total_paid)}</span>
+          <span className=" text-lg text-gray-900">
+            {formatter(item.total_paid)}
+          </span>
         </p>
       </div>
     </div>

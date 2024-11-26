@@ -4,8 +4,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const DashboardSideBar = () => {
-  const [activeLink, setActiveLink] = useState("orders");
+  const pathname = window.location.pathname.split("/")[1];
+  const [activeLink, setActiveLink] = useState(pathname);
   const router = useRouter();
+
+  const onUpdateActiveLink = (value) => {
+    setActiveLink(value);
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-between">
@@ -17,6 +22,7 @@ const DashboardSideBar = () => {
               ? "dashboard-active dashboard-menu-link"
               : "dashboard-menu-link"
           }
+          onClick={() => onUpdateActiveLink("orders")}
         >
           <img src="/icons/order.svg" alt="" className="w-[18px]" />{" "}
           <span>Orders</span>
@@ -28,17 +34,19 @@ const DashboardSideBar = () => {
               ? "dashboard-active dashboard-menu-link"
               : "dashboard-menu-link"
           }
+          onClick={() => onUpdateActiveLink("wish-list")}
         >
           <img src="/icons/like.svg" alt="" className="w-[18px]" />
           <span>Wish List</span>
         </Link>
         <Link
-          href="/inbox"
+          href=""
           className={
             activeLink === "inbox"
               ? "dashboard-active dashboard-menu-link"
               : "dashboard-menu-link"
           }
+          onClick={() => onUpdateActiveLink("inbox")}
         >
           <img src="/icons/inbox.svg" alt="" className="w-[18px]" />
           <span>Inbox</span>
@@ -50,6 +58,7 @@ const DashboardSideBar = () => {
               ? "dashboard-active dashboard-menu-link"
               : "dashboard-menu-link"
           }
+          onClick={() => onUpdateActiveLink("edit-account")}
         >
           <img src="/icons/edit-account.svg" alt="" className="w-[18px]" />
           <span>Edit Account</span>
@@ -61,6 +70,7 @@ const DashboardSideBar = () => {
               ? "dashboard-active dashboard-menu-link"
               : "dashboard-menu-link"
           }
+          onClick={() => onUpdateActiveLink("edit-password")}
         >
           <img src="/icons/edit-password.svg" alt="" className="w-[18px]" />
           <span>Edit Password</span>
