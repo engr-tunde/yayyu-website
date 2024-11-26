@@ -1,6 +1,7 @@
 "use client";
 import WishListCard from "@/components/dashboard/WishListCard";
 import { useAppContext } from "@/context";
+import Link from "next/link";
 
 const WishListPage = () => {
   const { itemsInWishList } = useAppContext();
