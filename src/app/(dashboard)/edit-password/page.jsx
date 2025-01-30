@@ -4,11 +4,11 @@ import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
 import CustomFormik from "@/lib/utils/CustomFormik";
 import { editPaswordValues } from "@/lib/utils/initialValues";
-import {
-  validateUpdatePassword,
-  validateUpdateProfile,
-} from "@/lib/utils/validate";
+import { validateUpdatePassword } from "@/lib/utils/validate";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { errorNotification, successNotification } from "@/lib/helpers";
+axios.defaults.withCredentials = true;
 
 const EditPasswordPage = () => {
   const initialValues = editPaswordValues();
@@ -17,7 +17,22 @@ const EditPasswordPage = () => {
 
   const handleSubmit = async (values) => {
     console.log("values", values);
-    router.push("/orders");
+    const response = await axios.put(
+      `${process.env.API_ENDPOINT}/user-profile/update-password`,
+      values
+    );
+    console.log(response);
+    try {
+      if (response.status === 200) {
+        const data = response.data;
+        successNotification(data.message);
+        setTimeout(() => router.push("/dashboard"), 500);
+      } else {
+        errorNotification(response?.data?.error);
+      }
+    } catch (error) {
+      errorNotification(error?.response?.data?.error);
+    }
   };
 
   return (

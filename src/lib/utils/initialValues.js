@@ -18,10 +18,11 @@ export const signUpValues = () => {
 };
 
 export const updateProfileValues = (data) => {
+  console.log({ data });
   const initialValues = {
-    first_name: data.first_name,
-    last_name: data.last_name,
-    email: data.email,
+    first_name: data?.first_name,
+    last_name: data?.last_name,
+    email: data?.email,
   };
   return initialValues;
 };
@@ -53,6 +54,22 @@ export const resetPasswordValues = () => {
 export const otpValues = () => {
   const initialValues = {
     otp: "",
+  };
+  return initialValues;
+};
+
+export const orderValues = () => {
+  const initialValues = {
+    email: "",
+    phone: "",
+    country: "",
+    first_name: "",
+    last_name: "",
+    address: "",
+    apartment: "",
+    city: "",
+    state: "",
+    postal_code: "",
   };
   return initialValues;
 };

@@ -13,7 +13,12 @@ const CheckoutItems = ({ groupedBy }) => {
             >
               <div className="flex items-center gap-2">
                 <div className="relative h-[70px] w-[70px] border-[1.5px] border-[#d7d7d7] px-[2px] rounded-md">
-                  <img src={sItem.img} alt="" className="h-full" />
+                  <img
+                    src={`${process.env.API_IMAGES}/products/${sItem.img}`}
+                    alt=""
+                    className="h-full"
+                  />
+
                   <span className="absolute w-6 h-6 bg-[#666] rounded-full -top-2 -right-2 flex justify-center items-center text-white">
                     {item.length}
                   </span>

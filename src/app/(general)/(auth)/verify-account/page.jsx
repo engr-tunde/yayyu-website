@@ -7,16 +7,18 @@ import { errorNotification, successNotification } from "@/lib/helpers";
 import CustomFormik from "@/lib/utils/CustomFormik";
 import { otpValues } from "@/lib/utils/initialValues";
 import { validateOtp } from "@/lib/utils/validate";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const VerifyAccountPage = (params) => {
+const VerifyAccountPage = () => {
   const [minutes, setMinutes] = useState(2);
   const [seconds, setSeconds] = useState(0);
   const initialValues = otpValues();
   const validationSchema = validateOtp();
   const router = useRouter();
-  const userId = params.userId;
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+  console.log({ userId });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -99,7 +101,10 @@ const VerifyAccountPage = (params) => {
                 </div>
 
                 {seconds < 1 ? (
-                  <div className="font-semibold" onClick={resendOTP}>
+                  <div
+                    className="font-semibold cursor-pointer"
+                    onClick={resendOTP}
+                  >
                     Resend OTP
                   </div>
                 ) : (

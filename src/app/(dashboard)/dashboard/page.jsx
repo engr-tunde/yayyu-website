@@ -1,7 +1,11 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const OrdersPage = () => {
-  return <div className="w-full p-20"></div>;
+const DashboardPage = () => {
+  const router = useRouter();
+  router.push("/orders");
 };
 
-export default OrdersPage;
+export default DashboardPage;

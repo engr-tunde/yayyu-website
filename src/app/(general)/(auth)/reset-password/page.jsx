@@ -21,8 +21,8 @@ const ResetPasswordPage = () => {
     console.log(values);
     try {
       const response = await resetPassword({
-        token,
         id,
+        token,
         password: values.password,
       });
       if (response.status === 200) {
@@ -61,7 +61,7 @@ const ResetPasswordPage = () => {
               <div className="grid grid-cols-2 gap-1 mb-5">
                 <label className="font-medium">Confirm New password</label>
                 <InputField
-                  name="password"
+                  name="confirmPassword"
                   placeholder="Confirm new password"
                   full={true}
                 />

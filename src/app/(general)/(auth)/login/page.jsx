@@ -3,58 +3,73 @@
 import { resendVerificationOTP, userLogin } from "@/api";
 import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
+import useRouter from "@/hooks/useRouter";
 import { errorNotification, successNotification } from "@/lib/helpers";
 import CustomFormik from "@/lib/utils/CustomFormik";
 import { loginValues } from "@/lib/utils/initialValues";
 import { validateLogin } from "@/lib/utils/validate";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import axios from "axios";
+import checkLogin from "@/api/checkLogin";
+axios.defaults.withCredentials = true;
+// import { useRouter } from "next/router";
+// import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  checkLogin();
   const initialValues = loginValues();
   const validationSchema = validateLogin();
   const router = useRouter();
 
   const handleSubmit = async (values) => {
     console.log("values", values);
-    router.push("/orders");
-    // const response = await userLogin(values);
-    // console.log(response);
-    // try {
-    //   if (response.status === 200) {
-    //     const data = response.data;
-    //     if (data.message === "Unverified email") {
-    //       console.log(data.userId);
-    //       errorNotification("Account not yet verified.");
-    //       const otpRes = await resendVerificationOTP({ userId: data.userId });
-    //       setTimeout(() => {
-    //         if (otpRes.status === 200) {
-    //           const otpData = response.data;
-    //           successNotification(
-    //             "OTP has been sent to your email address. Provide the OTP in the next screen"
-    //           );
-    //           setTimeout(
-    //             () =>
-    //               router.push({
-    //                 pathname: "/verify-account",
-    //                 query: { userId: otpData.userId },
-    //               }),
-    //             2000
-    //           );
-    //         } else {
-    //           errorNotification(otpRes?.data?.error);
-    //         }
-    //       }, 1000);
-    //     } else {
-    //       successNotification(data.message);
-    //       setTimeout(() => router.push("/dashboard"), 1500);
-    //     }
-    //   } else {
-    //     errorNotification(response?.data?.error);
-    //   }
-    // } catch (error) {
-    //   errorNotification(error?.response?.data?.error);
-    // }
+    const response = await axios.post(
+      `${process.env.API_ENDPOINT}/user-auth/login`,
+      values
+    );
+    console.log(response);
+    try {
+      if (response.status === 200) {
+        const data = response.data;
+        if (data.message === "Unverified email") {
+          console.log(data.userId);
+          errorNotification("Account not yet verified.");
+          const otpRes = await resendVerificationOTP({ userId: data.userId });
+          setTimeout(() => {
+            if (otpRes.status === 200) {
+              const otpData = response.data;
+              successNotification(
+                "OTP has been sent to your email address. Provide the OTP in the next screen"
+              );
+              setTimeout(
+                () =>
+                  router.push({
+                    pathname: "/verify-account",
+                    query: { userId: otpData.userId },
+                  }),
+                // router.push(`/verify-account?userId=${otpData.userId}`),
+                1500
+              );
+            } else {
+              errorNotification(otpRes?.data?.error);
+            }
+          }, 1000);
+        } else {
+          successNotification(data.message);
+          setTimeout(
+            () =>
+              router.push({
+                pathname: "/orders",
+              }),
+            500
+          );
+        }
+      } else {
+        errorNotification(response?.data?.error);
+      }
+    } catch (error) {
+      errorNotification(error?.response?.data?.error);
+    }
   };
 
   return (
@@ -110,7 +125,7 @@ const LoginPage = () => {
               </div>
 
               <SubmitButton
-                title="Send"
+                title="Login"
                 className="mt-4 mb-6 w-full submit-btn py-4"
               />
 

@@ -6,11 +6,7 @@ export const validateLogin = () => {
       .string()
       .email("Invalid email")
       .required("Account email is missing"),
-    password: yup
-      .string()
-      .trim()
-      .min(8, "Password is too short")
-      .required("Account password is missing"),
+    password: yup.string().trim().required("Account password is missing"),
   });
   return validationSchema;
 };
@@ -96,21 +92,20 @@ export const validateOtp = () => {
   return validationSchema;
 };
 
-export const validateRequestService = () => {
+export const validateMakeOrder = () => {
+  const phoneRegExp = /^[\d|\+|\(]+[\)|\d|\s|-]*[\d]$/;
   const validationSchema = yup.object({
-    walletValue: yup
+    email: yup.string().email("Invalid email").required("Email is missing"),
+    phone: yup
       .string()
-      .trim()
-      .required("What is the estimated wallet value?"),
-    social: yup
-      .string()
-      .trim()
-      .required("Select a social network we can reach you through"),
-    socialHandle: yup
-      .string()
-      .trim()
-      .required("Provide your social media username"),
-    walletAddress: yup.string().trim().required("Wallet address is missing"),
+      .matches(phoneRegExp, "Invalid phone number provided")
+      .required("Phone number is missing"),
+    country: yup.string().trim().required("In which country are you located?"),
+    first_name: yup.string().trim().required("First name is missing!"),
+    last_name: yup.string().trim().required("Last name is missing!"),
+    address: yup.string().trim().required("Delivery address is missing!"),
+    city: yup.string().trim().required("Delivery city is missing!"),
+    state: yup.string().trim().required("Delivery state is missing!"),
   });
   return validationSchema;
 };

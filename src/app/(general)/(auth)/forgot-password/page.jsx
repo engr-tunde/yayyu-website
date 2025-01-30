@@ -1,6 +1,6 @@
 "use client";
 
-import { forgotPassword } from "@/api";
+import { forgotPassword, resendVerificationOTP } from "@/api";
 import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
 import { errorNotification, successNotification } from "@/lib/helpers";
@@ -16,11 +16,36 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (values) => {
     console.log(values);
     try {
-      const response = await forgotPassword(payload);
+      const response = await forgotPassword(values);
       console.log(response);
       if (response.status === 200) {
         const data = response.data;
-        successNotification(data.message);
+
+        if (data.message === "Unverified email") {
+          console.log(data.userId);
+          errorNotification("Account not yet verified.");
+          const otpRes = await resendVerificationOTP({ userId: data.userId });
+          setTimeout(() => {
+            if (otpRes.status === 200) {
+              const otpData = response.data;
+              successNotification(
+                "OTP has been sent to your email address. Provide the OTP in the next screen"
+              );
+              setTimeout(
+                () =>
+                  router.push({
+                    pathname: "/verify-account",
+                    query: { userId: otpData.userId },
+                  }),
+                1500
+              );
+            } else {
+              errorNotification(otpRes?.data?.error);
+            }
+          }, 1000);
+        } else {
+          successNotification(data.message);
+        }
       } else {
         errorNotification(response?.data?.error);
       }

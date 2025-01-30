@@ -1,17 +1,20 @@
-// "use client";
+"use client";
 
+import { fetchProducts } from "@/api";
+import ErrorWidget from "@/components/globals/ErrorWidget";
+import Loader from "@/components/globals/Loader";
 import PageHeader from "@/components/globals/PageHeader";
 import CatPageTitle from "@/components/shop/CatPageTitle";
-import { useAppContext } from "@/context";
-import { itemsData } from "@/lib/data";
 import { formatter } from "@/lib/helpers";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Our Shop",
-};
+// export const metadata = {
+//   title: "Our Shop",
+// };
 
 const ShopPage = () => {
+  const { products, productsLoading, productsError } = fetchProducts();
+
   return (
     <div className="h-full top-[100px]">
       <PageHeader title="Shop" />
@@ -29,36 +32,44 @@ const ShopPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-16 mt-10">
-          {itemsData.map((item, i) => (
-            <Link
-              // onClick={() => handleViewItem(item)}
-              //   pathname: `/${item.item_slug}`,
-              //   query: { data: JSON.stringify(item) },
-              // }}
-              href={`/${item.item_slug}`}
-              key={i}
-              className="col-span-1 flex flex-col gap-1 items-center"
-            >
-              <img src={item.img} alt="" className="shop-item-img" />
-              <p>{item.item_name}</p>
-              {item.original_price != item.new_price ? (
-                <>
-                  <span className="font-semibold text-lg mb-[-6px] text-[#9a9a9a] line-through">
+        {products && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-16 mt-10">
+            {products.map((item, i) => (
+              <Link
+                // onClick={() => handleViewItem(item)}
+                //   pathname: `/${item.item_slug}`,
+                //   query: { data: JSON.stringify(item) },
+                // }}
+                href={`/${item.item_slug}`}
+                key={i}
+                className="col-span-1 flex flex-col gap-1 items-center"
+              >
+                <img
+                  src={`${process.env.API_IMAGES}/products/${item.img}`}
+                  alt=""
+                  className="shop-item-img"
+                />
+                <p>{item.item_name}</p>
+                {item.original_price != item.new_price ? (
+                  <>
+                    <span className="font-semibold text-lg mb-[-6px] text-[#9a9a9a] line-through">
+                      {formatter(item.original_price)}
+                    </span>
+                    <span className="font-semibold text-xl ">
+                      {formatter(item.new_price)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold text-xl">
                     {formatter(item.original_price)}
                   </span>
-                  <span className="font-semibold text-xl ">
-                    {formatter(item.new_price)}
-                  </span>
-                </>
-              ) : (
-                <span className="font-semibold text-xl">
-                  {formatter(item.original_price)}
-                </span>
-              )}
-            </Link>
-          ))}
-        </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+        {productsLoading && <Loader />}
+        {productsError && <ErrorWidget error={productsError} />}
 
         <div className="flex items-center justify-end mt-16 gap-2 lg:gap-4 mb-5">
           <div className="flex gap-1 lg:gap-2 items-center">

@@ -37,7 +37,7 @@ a {
   @apply bg-[#F7F7F7] border-black border-[2px] text-black text-sm text-center hover:bg-black hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer;
 }
 .home-item-img {
-  @apply h-[300px] lg:h-[350px] hover:scale-90 duration-500 ease-in;
+  @apply h-[300px] lg:h-[350px] w-full hover:scale-90 duration-500 ease-in;
 }
 .shop-item-img {
   @apply h-[150px] lg:h-[300px] hover:scale-90 duration-500 ease-in;
@@ -69,7 +69,7 @@ select {
 }
 .li {
   list-style-type: disc;
-  @apply ml-10 text-sm mb-2 leading-[1.5rem];
+  @apply ml-5 text-sm mb-0 leading-[1.5rem];
 }
 ol .li {
   list-style: georgian;

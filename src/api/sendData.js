@@ -1,5 +1,5 @@
-import { DateSchema } from 'yup';
-import { axiosInstance } from './client';
+import { DateSchema } from "yup";
+import { axiosInstance } from "./client";
 
 const postData = async (url, data) => {
   const result = await axiosInstance()
@@ -45,21 +45,22 @@ const postMultipartData = async (url, data) => {
   return result;
 };
 
-export const mutationRequest = (url, type = 'post', data) => {
+export const mutationRequest = (url, type = "post", data) => {
+  console.log({ data });
   switch (type.toLowerCase()) {
-    case 'post':
+    case "post":
       return postData(url, data);
 
-    case 'put':
+    case "put":
       return putData(url, data);
 
-    case 'patch':
+    case "patch":
       return patchData(url, data);
 
-    case 'delete':
+    case "delete":
       return deleteData(url);
 
-    case 'data':
+    case "data":
       return postMultipartData(url, data);
 
     default:

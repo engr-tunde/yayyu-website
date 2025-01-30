@@ -14,7 +14,11 @@ const CartExplore = ({ related_products }) => {
             href={`/${item.item_slug}`}
             className="col-span-1 flex flex-col gap-1 items-center"
           >
-            <img src={item.img} alt="" className="shop-item-img" />
+            <img
+              src={`${process.env.API_IMAGES}/products/${item.img}`}
+              alt=""
+              className="shop-item-img"
+            />
             <p className="uppercase -mb-1">{item.item_name}</p>
 
             {item.original_price != item.new_price ? (

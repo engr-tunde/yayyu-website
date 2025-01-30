@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import ExpiredStorage from "expired-storage";
 import CartSummaryCard from "@/components/cart/CartSummaryCard";
 import CartExplore from "@/components/cart/CartExplore";
+import { fetchProducts } from "@/api";
 
 const CartPage = () => {
   const expiredStorage = new ExpiredStorage();
@@ -17,7 +18,8 @@ const CartPage = () => {
   const forceUpdate = useCallback(() => setCartUpdated({}), []);
 
   const { itemsInCart, setItemsInCart } = useAppContext();
-  const related_products = shuffleArray(itemsData);
+  const { products, productsLoading, productsError } = fetchProducts();
+  const related_products = shuffleArray(products);
 
   console.log("itemsInCart", itemsInCart);
 
@@ -88,12 +90,12 @@ const CartPage = () => {
     let discount = 0;
     let subT = 0;
     itemsInCart.forEach((ele) => {
-      total += ele.new_price;
+      total += Number(ele.new_price);
     });
     console.log("total fee", total);
     setTotalPrice(total);
 
-    discount = (discountData.percent / 100) * total;
+    discount = (discountData.percent / 100) * Number(total);
     setTotalDiscount(discount);
 
     subT = total - discount;
@@ -123,7 +125,7 @@ const CartPage = () => {
                     <div className="flex justify-between text-sm">
                       <div className="flex gap-4">
                         <img
-                          src={sItem.img}
+                          src={`${process.env.API_IMAGES}/products/${sItem.img}`}
                           alt=""
                           className="h-[70px] border-[1.5px] border-[#d7d7d7] px-[2px] rounded-md"
                         />

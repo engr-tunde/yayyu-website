@@ -1,16 +1,18 @@
 "use client";
 
 import { userRegister } from "@/api";
+import checkLogin from "@/api/checkLogin";
 import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
+import useRouter from "@/hooks/useRouter";
 import { errorNotification, successNotification } from "@/lib/helpers";
 import CustomFormik from "@/lib/utils/CustomFormik";
 import { signUpValues } from "@/lib/utils/initialValues";
 import { validateSignup } from "@/lib/utils/validate";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
+  checkLogin();
   const initialValues = signUpValues();
   const validationSchema = validateSignup();
   const router = useRouter();
@@ -83,7 +85,7 @@ const RegisterPage = () => {
               <div className="grid grid-cols-2 gap-1 mb-5">
                 <label className="font-medium">Confirm password</label>
                 <InputField
-                  name="password"
+                  name="confirmPassword"
                   placeholder="Confirm password"
                   type="password"
                   full={true}
@@ -110,7 +112,7 @@ const RegisterPage = () => {
               </div>
 
               <SubmitButton
-                title="Send"
+                title="Sign Up"
                 className="mt-4 mb-6 w-full submit-btn py-4"
               />
 

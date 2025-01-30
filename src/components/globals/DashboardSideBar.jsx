@@ -1,15 +1,47 @@
 "use client";
+import { fetchUser } from "@/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
+import { errorNotification, successNotification } from "@/lib/helpers";
+axios.defaults.withCredentials = true;
 
 const DashboardSideBar = () => {
   const pathname = window.location.pathname.split("/")[1];
   const [activeLink, setActiveLink] = useState(pathname);
   const router = useRouter();
+  const { user, userLoading, userError } = fetchUser();
+
+  if (userError) {
+    errorNotification("Please login to continue to your dashboard!");
+    setTimeout(() => router.push("/login"), 1000);
+  }
 
   const onUpdateActiveLink = (value) => {
     setActiveLink(value);
+  };
+
+  const handleLogout = async () => {
+    const response = await axios.post(
+      `${process.env.API_ENDPOINT}/user-auth/logout`,
+      null,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response);
+    try {
+      if (response.status === 200) {
+        const data = response.data;
+        successNotification(data.message);
+        setTimeout(() => window.location.replace("/login"), 500);
+      } else {
+        errorNotification(response?.data?.error);
+      }
+    } catch (error) {
+      errorNotification(error?.response?.data?.error);
+    }
   };
 
   return (
@@ -77,10 +109,7 @@ const DashboardSideBar = () => {
         </Link>
       </div>
 
-      <div
-        onClick={() => router.push("/login")}
-        className="dark-btn w-full py-3"
-      >
+      <div onClick={handleLogout} className="dark-btn w-full py-3">
         Logout
       </div>
     </div>
