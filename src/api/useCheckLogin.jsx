@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { errorNotification, successNotification } from "@/lib/helpers";
 axios.defaults.withCredentials = true;
 
-const checkLogin = () => {
+const useCheckLogin = () => {
   const router = useRouter();
   useEffect(() => {
     const check = async () => {
@@ -29,4 +29,4 @@ const checkLogin = () => {
   }, []);
 };
 
-export default checkLogin;
+export default useCheckLogin;

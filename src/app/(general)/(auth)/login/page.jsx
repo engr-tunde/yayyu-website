@@ -10,13 +10,13 @@ import { loginValues } from "@/lib/utils/initialValues";
 import { validateLogin } from "@/lib/utils/validate";
 import Link from "next/link";
 import axios from "axios";
-import checkLogin from "@/api/checkLogin";
+import useCheckLogin from "@/api/useCheckLogin";
 axios.defaults.withCredentials = true;
 // import { useRouter } from "next/router";
 // import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
-  checkLogin();
+  useCheckLogin();
   const initialValues = loginValues();
   const validationSchema = validateLogin();
   const router = useRouter();

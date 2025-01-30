@@ -1,7 +1,7 @@
 "use client";
 
 import { userRegister } from "@/api";
-import checkLogin from "@/api/checkLogin";
+import useCheckLogin from "@/api/useCheckLogin";
 import InputField from "@/components/globals/form/InputField";
 import SubmitButton from "@/components/globals/form/SubmitButton";
 import useRouter from "@/hooks/useRouter";
@@ -12,7 +12,7 @@ import { validateSignup } from "@/lib/utils/validate";
 import Link from "next/link";
 
 const RegisterPage = () => {
-  checkLogin();
+  useCheckLogin();
   const initialValues = signUpValues();
   const validationSchema = validateSignup();
   const router = useRouter();
