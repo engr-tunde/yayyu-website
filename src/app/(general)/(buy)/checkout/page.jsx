@@ -4,6 +4,7 @@ import { fetchDiscountData, fetchShippingData, makeOrder } from "@/api";
 import CheckoutItems from "@/components/checkout/CheckoutItems";
 import CheckoutPaymentMethodCard from "@/components/checkout/CheckoutPaymentMethodCard";
 import CheckoutTotalCard from "@/components/checkout/CheckoutTotalCard";
+import ErrorWidget from "@/components/globals/ErrorWidget";
 import CheckBox from "@/components/globals/form/CheckBox";
 import InputField from "@/components/globals/form/InputField";
 import SelectCountryField from "@/components/globals/form/SelectCountryField";
@@ -29,21 +30,24 @@ const CheckoutPage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
-  const [shipping, setShipping] = useState({});
+  const [shipping, setShipping] = useState({
+    location: "",
+    delivery_duration: "",
+    fee: 0,
+  });
   const router = useRouter();
   const { shippingData, shippingDataLoading, shippingDataError } =
     fetchShippingData();
   const { discountData } = fetchDiscountData();
+  console.log({ discountData });
 
   const { itemsInCart, setItemsInCart } = useAppContext();
-  console.log("itemsInCart", itemsInCart);
 
   let groupedBy = Object.groupBy(
     itemsInCart,
     (item) => `${item.item_name}-${item.size}-${item.color}`
   );
   groupedBy = Object.values(groupedBy);
-  console.log("groupedBy itemsInCart", groupedBy);
 
   const calculateTotalFee = () => {
     let cartTotal = 0;
@@ -54,26 +58,25 @@ const CheckoutPage = () => {
       cartTotal += Number(ele.new_price);
     });
 
-    setOriginal_total(cartTotal);
+    setOriginal_total(Number(cartTotal));
 
-    disco = Number((discountData?.percent / 100) * cartTotal);
+    disco = Number((Number(discountData?.percent) / 100) * Number(cartTotal));
     setDiscount(disco);
-    subT = cartTotal - disco;
+    subT = Number(cartTotal) - disco;
     setSubtotal(subT);
     overAllTotal = subT + Number(shipping?.fee);
     setTotalPrice(overAllTotal);
-    console.log("totalPrice", totalPrice);
   };
 
   useEffect(() => {
     calculateTotalFee();
   }, [
-    itemsInCart,
+    // itemsInCart,
     discountData,
     shippingData,
     totalPrice,
     shipping,
-    calculateTotalFee,
+    // calculateTotalFee,
   ]);
 
   const initialValues = orderValues();
@@ -81,6 +84,10 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (values) => {
     console.log(values);
+
+    if (!shipping.location.length) {
+      errorNotification("Please select Shipping Method");
+    }
 
     if (itemsInCart.length > 0) {
       const payload = {
@@ -113,11 +120,13 @@ const CheckoutPage = () => {
   };
 
   console.log("totalPrice", totalPrice);
-  // console.log("shipping", shipping);
+  console.log("subtotal", subtotal);
+  console.log("shipping", shipping);
+  console.log("original_total", original_total);
 
   const setShippingData = (item) => {
     setShipping(item);
-    successNotification(`Shpping successfully set to ${item.location}`);
+    successNotification(`Deliverying to ${item.location}`);
   };
   return (
     <div className="pt-[70px] ">
@@ -174,19 +183,23 @@ const CheckoutPage = () => {
                     <h1 className="text-xl font-semibold">Shipping method</h1>
                   </div>
 
-                  <div className="col-span-2 flex flex-col gap-1">
+                  <div className="col-span-2 flex flex-col gap-[6px]">
                     {shippingData &&
                       shippingData.map((item, i) => (
                         <div
                           onClick={() => setShippingData(item)}
                           key={i}
-                          className="w-full border-[2px] border-[#dedede] p-3 flex justify-between items-center"
+                          className={
+                            shipping.location === item.location
+                              ? "cursor-pointer w-full border-[7px] border-[#242424] py-1 lg:py-2 px-3 flex justify-between items-center"
+                              : "cursor-pointer w-full border-[2px] border-[#dedede] py-1 lg:py-2 px-3 flex justify-between items-center"
+                          }
                         >
                           <div className="flex gap-3 lg:gap-5 items-center">
                             <div className="h-[23px] w-[23px] border-black border-[5px] rounded-full"></div>
-                            <span className="text-sm text-[#636060]">
-                              Standard ({item.location},{" "}
-                              {item.delivery_duration})
+                            <span className="text-[12px] text-sm text-[#636060]">
+                              {item.location} ({item.delivery_duration}{" "}
+                              delivery)
                             </span>
                           </div>
                           <div className="text-[16px]">
@@ -195,7 +208,9 @@ const CheckoutPage = () => {
                         </div>
                       ))}
                     {shippingDataLoading && <Loader />}
-                    {shippingDataLoading}
+                    {shippingDataError && (
+                      <ErrorWidget error={shippingDataError} />
+                    )}
                   </div>
 
                   <CheckoutPaymentMethodCard />
@@ -236,7 +251,9 @@ const CheckoutPage = () => {
               <div className="w-full col-span-1 h-max flex flex-col gap-4 p-5 sticky lg:top-[100px]">
                 <div className="flex justify-between items-end">
                   <span className="text-sm">Subtotal</span>
+                  {/* {subtotal > 0 ? ( */}
                   <span className="font-semibold">{formatter(subtotal)}</span>
+                  {/* ) : null} */}
                 </div>
 
                 <div className="flex justify-between items-end mb-2">

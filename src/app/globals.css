@@ -37,7 +37,7 @@ a {
   @apply bg-[#F7F7F7] border-black border-[2px] text-black text-sm text-center hover:bg-black hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer;
 }
 .home-item-img {
-  @apply h-[300px] lg:h-[350px] w-full hover:scale-90 duration-500 ease-in;
+  @apply h-[300px] w-full lg:h-[350px] lg:w-full hover:scale-90 duration-500 ease-in;
 }
 .shop-item-img {
   @apply h-[150px] lg:h-[300px] hover:scale-90 duration-500 ease-in;

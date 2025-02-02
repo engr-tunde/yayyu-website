@@ -57,6 +57,15 @@ export const fetchProducts = () => {
     mutateProducts: mutate,
   };
 };
+export const fetchProductCategories = () => {
+  const { data, error, mutate } = useSWR("/general/all-categories", fetcher);
+  return {
+    categories: data?.data,
+    categoriesLoading: !error && !data,
+    categoriesError: error,
+    mutateCategories: mutate,
+  };
+};
 export const fetchSingleProduct = (item_slug) => {
   const { data, error, mutate } = useSWR(
     `/general/single-product-slug/${item_slug}`,

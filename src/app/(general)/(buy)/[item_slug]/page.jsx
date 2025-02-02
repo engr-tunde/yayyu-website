@@ -15,6 +15,7 @@ import {
 import ExpiredStorage from "expired-storage";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
 
 // export const metadata = {
 //   title: "Our Shop",
@@ -32,6 +33,38 @@ const SingleItemPage = ({ params, searchParams }) => {
   const [cartUpdated, setCartUpdated] = useState(false);
   const forceUpdate = useCallback(() => setCartUpdated({}), []);
 
+  const [slideNumber, setSlideNumber] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenImageModal = (index) => {
+    setSlideNumber(index);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const prevSlide = () => {
+    slideNumber === 0
+      ? setSlideNumber(product?.images.split(", ").length - 1)
+      : setSlideNumber(slideNumber - 1);
+  };
+
+  const nextSlide = () => {
+    slideNumber + 1 === product?.images.split(", ").length
+      ? setSlideNumber(0)
+      : setSlideNumber(slideNumber + 1);
+  };
+
+  useEffect(() => {
+    const autoPlay = setInterval(() => {
+      nextSlide();
+    }, 3000);
+
+    return () => clearInterval(autoPlay);
+  }, [slideNumber]);
+
   // const data = JSON.parse(searchParams.data);
   const item_slug = params.item_slug;
 
@@ -41,6 +74,7 @@ const SingleItemPage = ({ params, searchParams }) => {
   const { reviews, reviewsLoading, reviewsError } = fetchProductReviews(
     product?._id
   );
+  console.log({ product });
 
   // For related products
   const r_product = products?.filter(
@@ -84,8 +118,8 @@ const SingleItemPage = ({ params, searchParams }) => {
           ? sizeAndPrice.original_price
           : item.original_price,
         new_price: sizeAndPrice.size ? sizeAndPrice.new_price : item.new_price,
-        size: product.sizes ? sizeAndPrice.size : "",
-        color: product.colors ? selectedColor : "",
+        size: product.sizes.length ? sizeAndPrice.size : "",
+        color: product.colors.length ? selectedColor : "",
       };
       currentWishList.push(itemToWishList);
       let updatedItems = JSON.stringify(currentWishList);
@@ -93,7 +127,7 @@ const SingleItemPage = ({ params, searchParams }) => {
       setItemsInWishList(currentWishList);
       forceUpdate();
       successNotification(
-        product.sizes
+        product.sizes.length
           ? `1 ${item.item_name} - size ${sizeAndPrice.size} added to your Wish List`
           : `1 ${item.item_name} added to your Wish List`
       );
@@ -101,8 +135,6 @@ const SingleItemPage = ({ params, searchParams }) => {
   };
 
   const handleAddToCart = (item) => {
-    console.log("sizes", product.sizes);
-    console.log("color", product.colors);
     if (product.sizes.length && Object.keys(sizeAndPrice).length === 0) {
       errorNotification("Please select your preferred size first");
     } else if (product.colors.length && !selectedColor) {
@@ -115,9 +147,11 @@ const SingleItemPage = ({ params, searchParams }) => {
         item_name: item.item_name,
         img: item.img,
         original_price: product.original_price,
-        new_price: product.sizes ? sizeAndPrice.new_price : product.new_price,
-        size: product.sizes ? sizeAndPrice.size : "",
-        color: product.colors ? selectedColor : "",
+        new_price: product.sizes.length
+          ? sizeAndPrice.new_price
+          : product.new_price,
+        size: product.sizes.length ? sizeAndPrice.size : "",
+        color: product.colors.length ? selectedColor : "",
       };
       currentCart.push(itemToCart);
       let updatedItems = JSON.stringify(currentCart);
@@ -126,7 +160,7 @@ const SingleItemPage = ({ params, searchParams }) => {
       forceUpdate();
       setShowCart(false);
       successNotification(
-        product.sizes
+        product.sizes.length
           ? `1 ${item.item_name} - size ${sizeAndPrice.size} added to cart`
           : `1 ${item.item_name} added to cart`
       );
@@ -160,7 +194,7 @@ const SingleItemPage = ({ params, searchParams }) => {
   };
 
   const handleAddMoreToCartSized = (item) => {
-    if (product.colors && !selectedColor) {
+    if (product.colors.length && !selectedColor) {
       errorNotification("Please select your preferred color first");
     } else {
       let currentCart = expiredStorage.getItem("cart");
@@ -172,7 +206,7 @@ const SingleItemPage = ({ params, searchParams }) => {
         original_price: item.original_price,
         new_price: item.new_price,
         size: item.size,
-        color: product.colors ? selectedColor : "",
+        color: product.colors.length ? selectedColor : "",
       };
       currentCart.push(itemToCart);
       let updatedItems = JSON.stringify(currentCart);
@@ -235,20 +269,24 @@ const SingleItemPage = ({ params, searchParams }) => {
       {product && reviews && products ? (
         <>
           <PageHeaderTwo title={`Home / ${product.item_name}`} />
-          <div className="container py-20">
+          <div className="container py-20 relative">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-28 gap-y-14">
               <div className="col-span-1">
                 <div className="w-full mb-5 border-[1.7px] border-[#F2F2F2] flex justify-center">
-                  <Link
+                  {/* <Link
                     href={`${process.env.API_IMAGES}/products/${product.img}`}
                     target="_blank"
-                  >
-                    <img
-                      src={`${process.env.API_IMAGES}/products/${product.img}`}
-                      alt=""
-                      className="h-full"
-                    />
-                  </Link>
+                  > */}
+                  <img
+                    // src={`${process.env.API_IMAGES}/products/${product.img}`}
+                    src={`${process.env.API_IMAGES}/products/${
+                      product.images.split(", ")[slideNumber]
+                    }`}
+                    onClick={() => handleOpenImageModal(slideNumber)}
+                    alt=""
+                    className="h-full cursor-pointer"
+                  />
+                  {/* </Link> */}
                 </div>
                 <div className="flex gap-5 lg:gap-10 justify-evenly">
                   {product.images &&
@@ -257,16 +295,24 @@ const SingleItemPage = ({ params, searchParams }) => {
                         key={i}
                         className="w-[80px] h-[80px] lg:w-[120px] lg:h-[120px] border-[1.5px] border-[#F2F2F2]"
                       >
-                        <Link
+                        {/* <Link
                           href={`${process.env.API_IMAGES}/products/${img}`}
                           target="_blank"
+                        > */}
+                        <div
+                          className={
+                            slideNumber === i
+                              ? "border-4 border-yayyuYellow opacity-100"
+                              : "opacity-30"
+                          }
+                          onClick={() => handleOpenImageModal(i)}
                         >
                           <img
                             src={`${process.env.API_IMAGES}/products/${img}`}
                             alt=""
-                            className="h-full w-full"
+                            className="h-full w-full cursor-pointer"
                           />
-                        </Link>
+                        </div>
                       </div>
                     ))}
                 </div>
@@ -305,89 +351,93 @@ const SingleItemPage = ({ params, searchParams }) => {
                 <span className="text-sm leading-6 md:leading-6">
                   {product.description}
                 </span>
-                {product.sizes.length && (
+                {product.sizes.length ? (
                   <div className="flex flex-col gap-1">
                     <div className="h-[1.5px] w-full bg-[#F7F7F7] my-1"></div>
                     <span className="uppercase text-[18px]">Sizes</span>
                     <div className="flex gap-5 items-end">
-                      {product.sizes &&
-                        product.sizes.map((item, i) => (
-                          <div
-                            onClick={() => handleSelectSize(item)}
-                            key={i}
-                            className={
-                              sizeAndPrice.size === item.size
-                                ? "text-sm h-10 w-14 flex justify-center items-center bg-[#000] text-white border-[1px] border-[#f0f0f0] cursor-pointer ease-in duration-500"
-                                : "text-sm h-8 w-12 flex justify-center items-center bg-[#F7F7F7] border-[1px] border-[#f0f0f0] text-black cursor-pointer"
-                            }
-                          >
-                            {/* {item.size} */}
-                          </div>
-                        ))}
+                      {product.sizes.map((item, i) => (
+                        <div
+                          onClick={() => handleSelectSize(item)}
+                          key={i}
+                          className={
+                            sizeAndPrice.size === item.size
+                              ? "text-sm h-10 w-14 flex justify-center items-center bg-[#000] text-white border-[1px] border-[#f0f0f0] cursor-pointer ease-in duration-500"
+                              : "text-sm h-8 w-12 flex justify-center items-center bg-[#F7F7F7] border-[1px] border-[#f0f0f0] text-black cursor-pointer"
+                          }
+                        >
+                          {item.size}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                )}
+                ) : null}
 
-                {product.colors.length && (
+                {product.colors.length ? (
                   <div className="flex flex-col gap-1">
                     <div className="h-[1.5px] w-full bg-[#F7F7F7] my-1"></div>
                     <span className="uppercase text-[18px]">Colours</span>
                     <div className="flex items-end gap-4">
-                      {product.colors &&
-                        product.colors.map((it, i) => (
-                          <div
-                            key={i}
-                            onClick={() => handleSelectColor(it.toLowerCase())}
-                            className={
-                              it.toLowerCase() === "red"
-                                ? `rounded-full bg-red-500 cursor-pointer ${
-                                    selectedColor === "red"
-                                      ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `blue`
-                                ? `rounded-full bg-blue-500 cursor-pointer ${
-                                    selectedColor === "blue"
-                                      ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `green`
-                                ? `rounded-full bg-green-500 cursor-pointer ${
-                                    selectedColor === "green"
-                                      ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `yellow`
-                                ? `rounded-full bg-yellow-500 cursor-pointer ${
-                                    selectedColor === "yellow"
-                                      ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `purple`
-                                ? `rounded-full bg-purple-500 cursor-pointer ${
-                                    selectedColor === "purple"
-                                      ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `black`
-                                ? `rounded-full bg-black border-[1px] border-red-500 cursor-pointer ${
-                                    selectedColor === "black"
-                                      ? "h-12 w-12 border-[7px] border-red-500 ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : it.toLowerCase() === `white`
-                                ? ` rounded-full bg-white border-[1px] border-black cursor-pointer ${
-                                    selectedColor === "white"
-                                      ? "h-10 w-10 border-[7px] border-black ease-in duration-500"
-                                      : "h-8 w-8"
-                                  }`
-                                : ``
-                            }
-                          ></div>
-                        ))}
+                      {product.colors.map((it, i) => (
+                        <div
+                          key={i}
+                          onClick={() => handleSelectColor(it.toLowerCase())}
+                          className={
+                            it.toLowerCase() === "red"
+                              ? `rounded-full bg-red-500 cursor-pointer ${
+                                  selectedColor === "red"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `blue`
+                              ? `rounded-full bg-blue-500 cursor-pointer ${
+                                  selectedColor === "blue"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `orange`
+                              ? `rounded-full bg-orange-500 cursor-pointer ${
+                                  selectedColor === "orange"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `green`
+                              ? `rounded-full bg-green-500 cursor-pointer ${
+                                  selectedColor === "green"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `yellow`
+                              ? `rounded-full bg-yellow-500 cursor-pointer ${
+                                  selectedColor === "yellow"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `purple`
+                              ? `rounded-full bg-purple-500 cursor-pointer ${
+                                  selectedColor === "purple"
+                                    ? "h-12 w-12 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `black`
+                              ? `rounded-full bg-black border-[1px] border-red-500 cursor-pointer ${
+                                  selectedColor === "black"
+                                    ? "h-12 w-12 border-[7px] border-red-500 ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : it.toLowerCase() === `white`
+                              ? ` rounded-full bg-white border-[1px] border-black cursor-pointer ${
+                                  selectedColor === "white"
+                                    ? "h-10 w-10 border-[7px] border-black ease-in duration-500"
+                                    : "h-8 w-8"
+                                }`
+                              : ``
+                          }
+                        ></div>
+                      ))}
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 {
                   <div
@@ -416,7 +466,7 @@ const SingleItemPage = ({ params, searchParams }) => {
                         </div>
                       </div>
                       <div className="flex flex-col gap-4 lg:px-5">
-                        {product.sizes &&
+                        {product.sizes.length &&
                           product.sizes.map((item, i) => {
                             const prod = thisProductInCart;
                             const itemCount = prod?.filter(
@@ -484,7 +534,7 @@ const SingleItemPage = ({ params, searchParams }) => {
                     <div
                       className="plus-btn"
                       onClick={
-                        product.sizes
+                        product.sizes.length
                           ? () => setShowCart(true)
                           : () => handleRemoveFromCart(product)
                       }
@@ -495,7 +545,7 @@ const SingleItemPage = ({ params, searchParams }) => {
                     <div
                       className="plus-btn"
                       onClick={
-                        product.sizes
+                        product.sizes.length
                           ? () => setShowCart(true)
                           : () => handleAddToCart(product)
                       }
@@ -628,6 +678,69 @@ const SingleItemPage = ({ params, searchParams }) => {
                 )}
               </div>
             </div>
+
+            {openModal && (
+              <div className="fixed z-[150] left-0 top-16 w-full h-screen bg-black/70 ">
+                <div className="w-[90vw] lg:w-[80%] mx-auto mt-[0.7%] h-full lg:h-[87%] flex justify-center items-center relative bg-black">
+                  <Link
+                    href={`${process.env.API_IMAGES}/products/${
+                      product.images.split(", ")[slideNumber]
+                    }`}
+                    target="_blank"
+                    className="h-full cursor-pointer"
+                  >
+                    <img
+                      src={`${process.env.API_IMAGES}/products/${
+                        product.images.split(", ")[slideNumber]
+                      }`}
+                      alt={`Yayyu Lifestyle - ${
+                        product.images.split(", ")[slideNumber]
+                      }`}
+                      className="h-full"
+                    />
+                  </Link>
+                  <div className="absolute z-[200] top-[20px] right-0 w-full flex justify-end items-center px-3 lg:px-8">
+                    {/* <Link
+                      href={`${process.env.API_IMAGES}/products/${
+                        product.images.split(", ")[slideNumber]
+                      }`}
+                      className="underline text-white"
+                      target="_blank"
+                    >
+                      View Full Image
+                    </Link> */}
+                    <div
+                      className="bg-yayyuYellow rounded-full h-8 w-8 flex justify-center items-center cursor-pointer"
+                      onClick={handleCloseModal}
+                    >
+                      <div className="text-2xl font-semibold">x</div>
+                    </div>
+                  </div>
+
+                  <div className="absolute z-[200] top-[48%] right-0 w-full flex justify-between items-center px-3 lg:px-10">
+                    <div className="cursor-pointer" onClick={prevSlide}>
+                      <FaArrowCircleLeft className="text-yayyuYellow text-3xl hover:text-[#867026] hover:text-4xl duration-300 ease-in" />
+                    </div>
+                    <div className="cursor-pointer" onClick={nextSlide}>
+                      <FaArrowCircleRight className="text-yayyuYellow text-3xl hover:text-[#867026] hover:text-4xl duration-300 ease-in" />
+                    </div>
+                  </div>
+
+                  {/* <Icon.ArrowLeftCircleFill
+                    size={30}
+                    color="#BBD51A"
+                    className="btnPrev"
+                    onClick={prevSlide}
+                  />
+                  <Icon.ArrowRightCircleFill
+                    size={30}
+                    color="#BBD51A"
+                    className="btnNext"
+                    onClick={nextSlide}
+                  /> */}
+                </div>
+              </div>
+            )}
 
             <div className="mt-14 lg:mt-20 mb-10 lg:mb-20">
               <h1 className="text-xl lg:text-2xl uppercase mb-10 lg:mb-10 text-center">

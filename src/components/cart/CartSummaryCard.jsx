@@ -19,7 +19,7 @@ const CartSummaryCard = ({
         <span className="font-medium">{formatter(totalPrice)}</span>
       </div>
       <div className="flex justify-between items-end mb-2">
-        <span className="text-sm">Discount ({discountData.percent}%)</span>
+        <span className="text-sm">Discount ({discountData?.percent}%)</span>
         <span className="font-medium">{formatter(totalDiscount)}</span>
       </div>
       <div className="flex justify-between items-end">

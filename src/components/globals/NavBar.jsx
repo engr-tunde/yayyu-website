@@ -1,15 +1,22 @@
 "use client";
 
 import { useAppContext } from "@/context";
+import { formatter, successNotification } from "@/lib/helpers";
+import ExpiredStorage from "expired-storage";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
 
 const NavBar = () => {
+  const expiredStorage = new ExpiredStorage();
+  const [cartUpdated, setCartUpdated] = useState(false);
+  const forceUpdate = useCallback(() => setCartUpdated({}), []);
   const path = window.location.pathname.split("/");
   const pathname = path[path.length - 1];
   const [activeLink, setActiveLink] = useState(pathname);
   const [nav, setNav] = useState(false);
   const [shopDropDown, setShopDropDown] = useState(false);
+  const [showCartItems, setShowCartItems] = useState(false);
   // const [activeLink, setActiveLink] = useState("home");
 
   const handleNavToggle = () => {
@@ -24,9 +31,96 @@ const NavBar = () => {
     setShopDropDown(false);
   };
 
-  const { itemsInCart, itemsInWishList } = useAppContext();
+  const { itemsInCart, itemsInWishList, setItemsInCart } = useAppContext();
   const cartCount = itemsInCart.length ? itemsInCart.length : 0;
   const wishListCount = itemsInWishList.length ? itemsInWishList.length : 0;
+
+  let groupedBy = Object.groupBy(
+    itemsInCart,
+    (item) => `${item.item_name}-${item.size}-${item.color}`
+  );
+  groupedBy = Object.values(groupedBy);
+
+  const handleAddMoreToCartSized = (item) => {
+    console.log("item", item);
+    let currentCart = expiredStorage.getItem("cart");
+    currentCart = JSON.parse(currentCart);
+    let itemToCart = {
+      item_id: item.item_id,
+      item_name: item.item_name,
+      img: item.img,
+      original_price: item.original_price,
+      new_price: item.new_price,
+      size: item.size,
+      color: item.color,
+    };
+    currentCart.push(itemToCart);
+    let updatedItems = JSON.stringify(currentCart);
+    expiredStorage.setItem("cart", updatedItems, 36000);
+    setItemsInCart(currentCart);
+    forceUpdate();
+    successNotification(`1 ${item.item_name} ${item.size} added to cart`);
+  };
+
+  const handleRemoveFromCartSized = (item) => {
+    let currentCart = expiredStorage.getItem("cart");
+    currentCart = JSON.parse(currentCart);
+
+    const otherItemsInCart = currentCart.filter(
+      (it) => it.item_id !== item.item_id
+    );
+
+    const thisProductInCart = currentCart.filter(
+      (it) => it.item_id == item.item_id
+    );
+
+    let otherSizesOfThisItemsInCart = thisProductInCart.filter(
+      (it) => it.size != item.size || it.color != item.color
+    );
+
+    let thisSizesOfThisItemsInCart = thisProductInCart.filter(
+      (it) => it.size == item.size && it.color == item.color
+    );
+
+    thisSizesOfThisItemsInCart.pop();
+    Array.prototype.push.apply(otherItemsInCart, otherSizesOfThisItemsInCart);
+    if (thisSizesOfThisItemsInCart.length) {
+      Array.prototype.push.apply(otherItemsInCart, thisSizesOfThisItemsInCart);
+    }
+    console.log("all items in cart", otherItemsInCart);
+
+    let updatedItems = JSON.stringify(otherItemsInCart);
+    expiredStorage.setItem("cart", updatedItems, 36000);
+    setItemsInCart(otherItemsInCart);
+    forceUpdate();
+    successNotification(`1 ${item.item_name} ${item.size} removed from cart`);
+  };
+
+  const handleRemoveItem = (item) => {
+    let currentCart = expiredStorage.getItem("cart");
+    currentCart = JSON.parse(currentCart);
+
+    const otherItemsInCart = currentCart.filter(
+      (it) => it.item_id !== item.item_id
+    );
+
+    const thisProductInCart = currentCart.filter(
+      (it) => it.item_id == item.item_id
+    );
+
+    let otherSizesOfThisItemsInCart = thisProductInCart.filter(
+      (it) => it.size != item.size || it.color != item.color
+    );
+
+    Array.prototype.push.apply(otherItemsInCart, otherSizesOfThisItemsInCart);
+    console.log("other items in cart", otherItemsInCart);
+
+    let updatedItems = JSON.stringify(otherItemsInCart);
+    expiredStorage.setItem("cart", updatedItems, 36000);
+    setItemsInCart(otherItemsInCart);
+    forceUpdate();
+    successNotification(`1 ${item.item_name} ${item.size} removed from cart`);
+  };
 
   return (
     <>
@@ -127,7 +221,7 @@ const NavBar = () => {
           </Link>
 
           <div className="w-[20%] lg:w-[45%] flex items-center justify-end gap-4">
-            <Link href="/login" className="hidden lg:block flex-col gap-0 ">
+            <Link href="/login" className="flex flex-col gap-0 ">
               <img src="/icons/account.svg" alt="" />
             </Link>
             <a
@@ -142,12 +236,89 @@ const NavBar = () => {
             <Link href="/" className="hidden lg:block flex-col gap-0">
               <img src="/icons/search.svg" alt="" />
             </Link>
-            <a href="/cart" className="flex gap-0 relative">
-              <img src="/icons/cart.svg" alt="" />
-              <div className="bg-red-600 w-4 h-4 flex justify-center items-center rounded-full absolute -right-3 -top-2">
-                <span className="text-[10px] text-white"> {cartCount}</span>
+            <div className="flex gap-0 relative">
+              <div
+                onClick={() => setShowCartItems(true)}
+                className="flex gap-0 relative cursor-pointer"
+              >
+                <img src="/icons/cart.svg" alt="" />
+                <div className="bg-red-600 w-4 h-4 flex justify-center items-center rounded-full absolute -right-3 -top-2">
+                  <span className="text-[10px] text-white"> {cartCount}</span>
+                </div>
               </div>
-            </a>
+
+              <div
+                className={
+                  showCartItems
+                    ? "absolute z-[1000] top-8 right-0 w-[280px] lg:w-[400px] pt-7 pb-10 border-t-[7px] border-yayyuYellow bg-white flex flex-col gap-5 px-5"
+                    : "hidden"
+                }
+              >
+                <div className="flex justify-between items-center">
+                  <div className="">Items in cart ({cartCount})</div>
+                  <div
+                    className="text-2xl font-medium cursor-pointer"
+                    onClick={() => setShowCartItems(false)}
+                  >
+                    x
+                  </div>
+                </div>
+                <div className="w-full flex flex-col gap-5">
+                  {groupedBy.map((item, i) => {
+                    const sItem = item[0];
+                    return (
+                      <div className="w-full flex items-center gap-3" key={i}>
+                        <img
+                          src={`${process.env.API_IMAGES}/products/${sItem.img}`}
+                          alt=""
+                          className="h-[60px] lg:h-[100px] border-[1.5px] border-[#d7d7d7] px-[2px] rounded-md"
+                        />
+                        <div className="w-full flex justify-between items-center">
+                          <div className="flex flex-col gap-3">
+                            <div className="">
+                              <div className="text-[#474747]xt-md">
+                                {sItem.item_name}
+                              </div>
+                              <div className="font-semibold text-lg">
+                                {formatter(sItem.new_price)}
+                              </div>
+                            </div>
+                            <div className="py-[5px] w-[33%] lg:w-[18%] flex gap-2 items-center justify-between text-xl">
+                              <div
+                                className="plus-btn"
+                                onClick={() => handleRemoveFromCartSized(sItem)}
+                              >
+                                -
+                              </div>
+                              <span>{item.length}</span>
+                              <div
+                                className="plus-btn"
+                                onClick={() => handleAddMoreToCartSized(sItem)}
+                              >
+                                +
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            onClick={() => handleRemoveItem(sItem)}
+                            className="text-red-500 py-[2px] px-3 rounded-md cursor-pointer text-xl hover:text-red-700 duration-300 ease-in"
+                          >
+                            <FaTrash />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <Link
+                  href="/cart"
+                  className="dark-btn w-full py-3"
+                  onClick={() => setShowCartItems(false)}
+                >
+                  Go to Cart
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
 

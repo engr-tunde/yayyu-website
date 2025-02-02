@@ -1,5 +1,6 @@
 "use client";
-
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { itemsData } from "@/lib/data";
 import { formatter } from "@/lib/helpers";
 import Link from "next/link";
@@ -12,6 +13,26 @@ import ErrorWidget from "../globals/ErrorWidget";
 const LatestArrivalsSection = () => {
   const { products, productsLoading, productsError } = fetchProducts();
 
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 701 },
+      items: 1,
+    },
+    mobile: {
+      breakpoint: { max: 700, min: 0 },
+      items: 1,
+    },
+  };
+
   return (
     <div className="w-full bg-white">
       <div className="container pt-10 pb-12 flex flex-col gap-8">
@@ -19,27 +40,30 @@ const LatestArrivalsSection = () => {
         <div className="hidden md:block w-full">
           {products && (
             <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
-              {products.map((item, i) => (
-                <Link
-                  // href={{
-                  //   pathname: `/${item.item_slug}`,
-                  //   query: { data: JSON.stringify(item) },
-                  // }}
-                  href={`/${item.item_slug}`}
-                  key={i}
-                  className="col-span-1 flex flex-col gap-1 items-center"
-                >
-                  <img
-                    src={`${process.env.API_IMAGES}/products/${item.img}`}
-                    alt=""
-                    className="home-item-img"
-                  />
-                  <p>{item.item_name}</p>
-                  <span className="font-semibold text-xl">
-                    {formatter(item.original_price)}
-                  </span>
-                </Link>
-              ))}
+              {products
+                .sort((a, b) => b._id - a._id)
+                .slice(0, 8)
+                .map((item, i) => (
+                  <Link
+                    // href={{
+                    //   pathname: `/${item.item_slug}`,
+                    //   query: { data: JSON.stringify(item) },
+                    // }}
+                    href={`/${item.item_slug}`}
+                    key={i}
+                    className="col-span-1 flex flex-col gap-1 items-center"
+                  >
+                    <img
+                      src={`${process.env.API_IMAGES}/products/${item.img}`}
+                      alt=""
+                      className="home-item-img"
+                    />
+                    <p>{item.item_name}</p>
+                    <span className="font-semibold text-xl">
+                      {formatter(item.original_price)}
+                    </span>
+                  </Link>
+                ))}
             </div>
           )}
           {productsLoading && <Loader />}
@@ -48,8 +72,13 @@ const LatestArrivalsSection = () => {
 
         <div className="block w-full md:hidden">
           {products && (
-            <div className="grid grid-cols-1 md:hidden">
-              {products.slice(0, 1).map((item, i) => (
+            <Carousel
+              responsive={responsive}
+              infinite={true}
+              className="grid grid-cols-1 md:hidden"
+            >
+              {/* <div className="grid grid-cols-1 md:hidden"> */}
+              {products.slice(0, 8).map((item, i) => (
                 <Link
                   key={i}
                   href={`/${item.item_slug}`}
@@ -66,15 +95,16 @@ const LatestArrivalsSection = () => {
                   </span>
                 </Link>
               ))}
-            </div>
+              {/* </div> */}
+            </Carousel>
           )}
           {productsLoading && <Loader />}
           {productsError && <ErrorWidget error={productsError} />}
         </div>
 
         <Link
-          href="/"
-          className="mt-8 uppercase dark-btn w-[60%] lg:w-[250px] lg:mx-auto py-4"
+          href="/shop"
+          className="mt-8 uppercase dark-btn w-[60%] lg:w-[250px] mx-auto py-4"
         >
           View All
         </Link>

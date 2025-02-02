@@ -1,13 +1,16 @@
 "use client";
 import { useAppContext } from "@/context";
-import { discountData, itemsData } from "@/lib/data";
+// import { discountData, itemsData } from "@/lib/data";
 import { formatter, shuffleArray, successNotification } from "@/lib/helpers";
 import "core-js/actual";
 import { useCallback, useEffect, useState } from "react";
 import ExpiredStorage from "expired-storage";
 import CartSummaryCard from "@/components/cart/CartSummaryCard";
 import CartExplore from "@/components/cart/CartExplore";
-import { fetchProducts } from "@/api";
+import { fetchDiscountData, fetchProducts } from "@/api";
+import { FaTrash } from "react-icons/fa";
+import Loader from "@/components/globals/Loader";
+import ErrorWidget from "@/components/globals/ErrorWidget";
 
 const CartPage = () => {
   const expiredStorage = new ExpiredStorage();
@@ -18,6 +21,8 @@ const CartPage = () => {
   const forceUpdate = useCallback(() => setCartUpdated({}), []);
 
   const { itemsInCart, setItemsInCart } = useAppContext();
+  const { discountData, discountDataLoading, discountDataError } =
+    fetchDiscountData();
   const { products, productsLoading, productsError } = fetchProducts();
   const related_products = shuffleArray(products);
 
@@ -85,6 +90,32 @@ const CartPage = () => {
     successNotification(`1 ${item.item_name} ${item.size} removed from cart`);
   };
 
+  const handleRemoveItem = (item) => {
+    let currentCart = expiredStorage.getItem("cart");
+    currentCart = JSON.parse(currentCart);
+
+    const otherItemsInCart = currentCart.filter(
+      (it) => it.item_id !== item.item_id
+    );
+
+    const thisProductInCart = currentCart.filter(
+      (it) => it.item_id == item.item_id
+    );
+
+    let otherSizesOfThisItemsInCart = thisProductInCart.filter(
+      (it) => it.size != item.size || it.color != item.color
+    );
+
+    Array.prototype.push.apply(otherItemsInCart, otherSizesOfThisItemsInCart);
+    console.log("other items in cart", otherItemsInCart);
+
+    let updatedItems = JSON.stringify(otherItemsInCart);
+    expiredStorage.setItem("cart", updatedItems, 36000);
+    setItemsInCart(otherItemsInCart);
+    forceUpdate();
+    successNotification(`1 ${item.item_name} ${item.size} removed from cart`);
+  };
+
   const calculateTotalFee = () => {
     let total = 0;
     let discount = 0;
@@ -95,7 +126,7 @@ const CartPage = () => {
     console.log("total fee", total);
     setTotalPrice(total);
 
-    discount = (discountData.percent / 100) * Number(total);
+    discount = (discountData?.percent / 100) * Number(total);
     setTotalDiscount(discount);
 
     subT = total - discount;
@@ -132,28 +163,38 @@ const CartPage = () => {
 
                         <div className="flex flex-col gap-[2px]">
                           <div className="text-[16px]">{sItem.item_name}</div>
-                          <div className="text-[13px]">
-                            Size:{" "}
-                            <span className="text-[16px]">{sItem.size}</span>
-                          </div>
-                          <div className="text-[13px]">
-                            Color:{" "}
-                            <span className="text-[16px]">{sItem.color}</span>
-                          </div>
+                          {sItem.size.length ? (
+                            <div className="text-[13px]">
+                              Size:{" "}
+                              <span className="text-[16px]">{sItem.size}</span>
+                            </div>
+                          ) : null}
+                          {sItem.color.length ? (
+                            <div className="text-[13px]">
+                              Color:{" "}
+                              <span className="text-[16px]">{sItem.color}</span>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                       <div className="flex flex-col gap-[2px]">
                         <div className="font-semibold text-lg">
                           {formatter(sItem.new_price)}
                         </div>
-                        <div className="text-lg text-[#aaa] line-through">
-                          {formatter(sItem.original_price)}
-                        </div>
+                        {sItem.original_price != sItem.new_price ? (
+                          <div className="text-lg text-[#aaa] line-through">
+                            {formatter(sItem.original_price)}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <div>
-                        <span>Remove</span>
+                      <div
+                        onClick={() => handleRemoveItem(sItem)}
+                        className="text-red-500 py-[2px] px-3 rounded-md cursor-pointer text-xl hover:text-red-700 duration-300 ease-in"
+                      >
+                        {/* <span>Remove</span> */}
+                        <FaTrash />
                       </div>
                       <div className="py-[5px] w-[33%] lg:w-[18%] flex gap-2 items-center justify-between text-xl">
                         <div
@@ -177,13 +218,17 @@ const CartPage = () => {
             </div>
           </div>
 
-          <CartSummaryCard
-            itemsInCart={itemsInCart}
-            totalPrice={totalPrice}
-            discountData={discountData}
-            totalDiscount={totalDiscount}
-            subtotal={subtotal}
-          />
+          {discountData && (
+            <CartSummaryCard
+              itemsInCart={itemsInCart}
+              totalPrice={totalPrice}
+              discountData={discountData}
+              totalDiscount={totalDiscount}
+              subtotal={subtotal}
+            />
+          )}
+          {discountDataLoading && <Loader />}
+          {discountDataError && <ErrorWidget error={discountDataError} />}
         </div>
 
         <CartExplore related_products={related_products} />
