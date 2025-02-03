@@ -33,7 +33,7 @@ const AboutSection = () => {
             <span className="text-base">Learn more</span>
             <img src="/icons/arrow-right.svg" alt="" />
           </Link>
-          <p className="w-[35%] text-sm text-end">
+          <p className="w-[39%] text-sm text-end">
             DISCOVER THE POWER OF BEAUTY
           </p>
         </div>
