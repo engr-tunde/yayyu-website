@@ -42,9 +42,9 @@ const HeroSection = () => {
             // backgroundPosition: "center center",
           }}
         ></div>
-        <div className="w-full h-[50vh] lg:h-[95vh] top-0 flex flex-col items-center justify-center gap-5 absolute z-40 pt-5 lg:pt-6">
+        <div className="w-full h-[65vh] lg:h-[95vh] top-0 flex flex-col items-center justify-center gap-5 absolute z-40 pt-10 lg:pt-6">
           <h1
-            className="text-2xl lg:text-4xl leading-[2.5rem] lg:leading-[4.5rem] font-medium text-white max-w-[90%] lg:max-w-[45%] text-center lg:uppercase"
+            className="text-2xl lg:text-4xl leading-[2.1rem] lg:leading-[4.5rem] font-medium text-white max-w-[80%] lg:max-w-[45%] text-center lg:uppercase"
             style={{ textShadow: "2px 2px #000" }}
           >
             Classic and Premium Collection
