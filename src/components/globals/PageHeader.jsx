@@ -5,7 +5,7 @@ const PageHeader = ({ title }) => {
     <div className="w-full h-[20vh] lg:h-[33vh] pageHeader">
       <div className="w-full h-full bg-black/45">
         <div className="container pt-[12vh] lg:pt-[21vh]">
-          <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold text-center uppercase">
+          <h1 className="text-white text-xl md:text-3xl lg:text-4xl font-medium text-center uppercase">
             {title}
           </h1>
         </div>

@@ -2,12 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Narin";
+  src: local("Narin"),
+    url(../../public/fonts/NarinRegular.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "Narin";
+  font-weight: 900;
+  src: local("Narin"), url(../../public/fonts/NarinBold.otf) format("opentype");
+}
+
+/* @font-face {
+  font-family: "Narin";
+  src: local("Narin"),
+    url(../../public//fonts/NarinRegularItalic.otf) format("opentype");
+} */
+.narin {
+  font-family: Narin, Arial, serif;
+  letter-spacing: 1px;
+}
+
+.dm_sans {
+  font-family: var(--dm-sans);
+}
+.dm_serif_display {
+  font-family: var(--dm-serif-display);
+}
+.baskervville {
+  font-family: var(--baskervville);
+}
+.inter {
+  font-family: var(--inter);
+}
+
 body {
-  @apply bg-white text-black;
+  @apply bg-white text-[#2c2c2c];
 }
 
 .menu-link {
-  @apply text-yayyuGrey hover:text-yayyuYellow  uppercase;
+  @apply text-[#111] hover:text-yayyuYellow  uppercase text-sm font-medium;
 }
 .active {
   @apply text-yayyuYellow;

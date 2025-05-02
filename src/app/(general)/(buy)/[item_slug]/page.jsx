@@ -4,6 +4,7 @@ import { fetchProductReviews, fetchProducts, fetchSingleProduct } from "@/api";
 import ErrorWidget from "@/components/globals/ErrorWidget";
 import Loader from "@/components/globals/Loader";
 import PageHeaderTwo from "@/components/globals/PageHeaderTwo";
+import RelatedProducts from "@/components/shop/RelatedProducts";
 import { useAppContext } from "@/context";
 import { reviewsData } from "@/lib/data";
 import {
@@ -318,9 +319,24 @@ const SingleItemPage = ({ params, searchParams }) => {
                 </div>
               </div>
               <div className="col-span-1 flex flex-col gap-3">
-                <h2 className="uppercase text-xl lg:text-2xl">
+                <h2 className="uppercase text-[13.5px]">{product.category}</h2>
+                <h2 className="uppercase text-[18px] lg:text-[20px]">
                   {product.item_name}
                 </h2>
+                {product.original_price != product.new_price ? (
+                  <div className="flex items-end gap-4">
+                    <h1 className="text-[13.5px] md:text-[16px] text-[#9a9a9a] line-through">
+                      {formatter(product.original_price)}
+                    </h1>
+                    <h1 className="text-[13.5px] md:text-[16px]">
+                      {formatter(product.new_price)}
+                    </h1>
+                  </div>
+                ) : (
+                  <h1 className="text-[13.5px] md:text-[16px]">
+                    {formatter(product.original_price)}
+                  </h1>
+                )}
                 <div className="flex gap-5 mb-1">
                   {rating > 0 ? (
                     <div className="flex items-center gap-1">
@@ -334,21 +350,8 @@ const SingleItemPage = ({ params, searchParams }) => {
                   ) : null}
                   <span>{reviews.length} Reviews</span>
                 </div>
-                {product.original_price != product.new_price ? (
-                  <div className="flex items-end gap-4">
-                    <h1 className="text-xl md:text-2xl font-semibold text-[#9a9a9a] line-through">
-                      {formatter(product.original_price)}
-                    </h1>
-                    <h1 className="text-2xl md:text-3xl font-semibold">
-                      {formatter(product.new_price)}
-                    </h1>
-                  </div>
-                ) : (
-                  <h1 className="text-2xl md:text-3xl font-semibold">
-                    {formatter(product.original_price)}
-                  </h1>
-                )}
-                <span className="text-sm leading-6 md:leading-6">
+
+                <span className="text-sm lg:text-[15px] leading-6 md:leading-6">
                   {product.description}
                 </span>
                 {product.sizes.length ? (
@@ -743,40 +746,10 @@ const SingleItemPage = ({ params, searchParams }) => {
             )}
 
             <div className="mt-14 lg:mt-20 mb-10 lg:mb-20">
-              <h1 className="text-xl lg:text-2xl uppercase mb-10 lg:mb-10 text-center">
+              <h1 className="text-[18px] lg:text-[20px] uppercase mb-10 lg:mb-10 text-center">
                 You may also like
               </h1>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8">
-                {related_products.slice(0, 4).map((item, i) => (
-                  <Link
-                    key={i}
-                    href={`/${item.item_slug}`}
-                    className="col-span-1 flex flex-col gap-1 items-center"
-                  >
-                    <img
-                      src={`${process.env.API_IMAGES}/products/${item.img}`}
-                      alt=""
-                      className="shop-item-img"
-                    />
-                    <p className="uppercase -mb-1">{item.item_name}</p>
-
-                    {item.original_price != item.new_price ? (
-                      <>
-                        <span className="font-semibold text-lg mb-[-6px] text-[#9a9a9a] line-through">
-                          {formatter(item.original_price)}
-                        </span>
-                        <span className="font-semibold text-xl ">
-                          {formatter(item.new_price)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="font-semibold text-xl">
-                        {formatter(item.original_price)}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </div>
+              <RelatedProducts related_products={related_products} />
             </div>
           </div>
         </>

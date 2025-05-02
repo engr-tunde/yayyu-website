@@ -12,6 +12,7 @@ import ErrorWidget from "../globals/ErrorWidget";
 
 const LatestArrivalsSection = () => {
   const { products, productsLoading, productsError } = fetchProducts();
+  console.log("products", products);
 
   const responsive = {
     superLargeDesktop: {
@@ -51,15 +52,17 @@ const LatestArrivalsSection = () => {
                     // }}
                     href={`/${item.item_slug}`}
                     key={i}
-                    className="col-span-1 flex flex-col gap-1 items-center"
+                    className="col-span-1 flex flex-col gap-[6px] items-center"
                   >
                     <img
                       src={`${process.env.API_IMAGES}/products/${item.img}`}
                       alt=""
                       className="home-item-img"
                     />
-                    <p>{item.item_name}</p>
-                    <span className="font-semibold text-xl">
+                    <p className="font-[500] text-[13px] uppercase">
+                      {item.item_name}
+                    </p>
+                    <span className="text-[13.8px] font-[400]">
                       {formatter(item.original_price)}
                     </span>
                   </Link>
@@ -82,15 +85,17 @@ const LatestArrivalsSection = () => {
                 <Link
                   key={i}
                   href={`/${item.item_slug}`}
-                  className="col-span-1 flex flex-col gap-1 items-center"
+                  className="col-span-1 flex flex-col gap-2 items-center"
                 >
                   <img
                     src={`${process.env.API_IMAGES}/products/${item.img}`}
                     alt=""
                     className="home-item-img"
                   />
-                  <p>{item.item_name}</p>
-                  <span className="font-semibold text-xl">
+                  <p className="font-[500] text-[13px] uppercase">
+                    {item.item_name}
+                  </p>
+                  <span className="text-[13.5px] font-[400]">
                     {formatter(item.original_price)}
                   </span>
                 </Link>
@@ -104,7 +109,7 @@ const LatestArrivalsSection = () => {
 
         <Link
           href="/shop"
-          className="mt-8 uppercase dark-btn w-[60%] lg:w-[250px] mx-auto py-4"
+          className="mt-3 lg:mt-8 uppercase dark-btn w-[60%] lg:w-[250px] mx-auto py-4"
         >
           View All
         </Link>

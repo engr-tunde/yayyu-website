@@ -50,6 +50,7 @@ export const resetPassword = async ({ id, token, password }) => {
 // General
 export const fetchProducts = () => {
   const { data, error, mutate } = useSWR("/general/all-products", fetcher);
+  console.log("data", data);
   return {
     products: data?.data,
     productsLoading: !error && !data,

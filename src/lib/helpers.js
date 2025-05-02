@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export const successNotification = (message) => toast.success(message);
@@ -62,4 +63,12 @@ export const removeFromArrayByAttr = (arr, attr, value) => {
     }
   }
   return arr;
+};
+
+export const useOutsideClick = (ref, onClickOut) => {
+  useEffect(() => {
+    const onCLick = (target) => !ref?.contains(target) && onClickOut?.();
+    document.addEventListener("click", onCLick);
+    return () => document.removeEventListener("click", onCLick);
+  }, []);
 };

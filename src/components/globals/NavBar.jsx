@@ -1,11 +1,12 @@
 "use client";
 
+import { fetchProductCategories } from "@/api";
 import { useAppContext } from "@/context";
-import { formatter, successNotification } from "@/lib/helpers";
+import { formatter, successNotification, useOutsideClick } from "@/lib/helpers";
 import ExpiredStorage from "expired-storage";
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { FaArrowAltCircleRight, FaTrash } from "react-icons/fa";
 
 const NavBar = () => {
   const expiredStorage = new ExpiredStorage();
@@ -18,6 +19,10 @@ const NavBar = () => {
   const [shopDropDown, setShopDropDown] = useState(false);
   const [showCartItems, setShowCartItems] = useState(false);
   // const [activeLink, setActiveLink] = useState("home");
+  const [showCategories, setshowCategories] = useState(false);
+
+  const { categories, categoriesLoading, categoriesError } =
+    fetchProductCategories();
 
   const handleNavToggle = () => {
     setNav(!nav);
@@ -122,6 +127,13 @@ const NavBar = () => {
     successNotification(`1 ${item.item_name} ${item.size} removed from cart`);
   };
 
+  const ref = useRef();
+  useOutsideClick(ref.current, () => {
+    setshowCategories(false);
+    setShopDropDown(false);
+    // setNav(false);
+  });
+
   return (
     <>
       <div className="fixed w-full shadow-md z-[100] py-3 md:py-4 bg-white">
@@ -152,7 +164,7 @@ const NavBar = () => {
                   ? "active menu-link cursor-pointer flex gap-1"
                   : "menu-link cursor-pointer flex gap-1 "
               }
-              onClick={handleShopDropDownToggle}
+              onMouseEnter={handleShopDropDownToggle}
             >
               <span>Shop</span>
               <img src="/icons/arrow-down.svg" alt="" />
@@ -161,28 +173,53 @@ const NavBar = () => {
             <div
               className={
                 shopDropDown
-                  ? "absolute z-[1000] top-20 left-[20vw] w-[200px] pt-7 pb-10 border-t-[7px] border-yayyuYellow bg-white flex flex-col gap-4 pl-5"
+                  ? "absolute z-[1000] top-20 left-[20vw] w-[200px] pt-7 pb-10 border-t-[7px] border-yayyuYellow bg-white flex flex-col gap-4 pl-5 "
                   : "hidden"
               }
             >
               <Link
                 href="/shop"
                 className={
-                  activeLink === "shop" ? "active menu-link" : "menu-link"
+                  activeLink === "shop" ? "active menu-link " : "menu-link "
                 }
+                style={{ fontWeight: "400 !important" }}
                 onClick={() => onUpdateActiveLink("shop")}
               >
                 Collection
               </Link>
-              <Link
-                href="/category"
-                className={
-                  activeLink === "category" ? "active menu-link" : "menu-link"
-                }
-                onClick={() => onUpdateActiveLink("category")}
+              <div
+                className="relative"
+                onMouseEnter={() => setshowCategories(true)}
               >
-                Category
-              </Link>
+                <div
+                  href="/category"
+                  className="menu-link cursor-pointer flex items-center gap-2"
+                  onClick={() => onUpdateActiveLink("category")}
+                >
+                  <span className="" style={{ fontWeight: "400 !important" }}>
+                    Category
+                  </span>
+                  <FaArrowAltCircleRight />
+                </div>
+                <div
+                  className={
+                    showCategories
+                      ? "absolute left-[101%] w-max top-0 grid grid-cols-3 py-5 px-7 gap-x-7 gap-y-3 bg-white border-l-4 border-l-yayyuYellow"
+                      : "hidden"
+                  }
+                  onMouseLeave={() => setshowCategories(false)}
+                >
+                  {categories?.map((cat, i) => (
+                    <Link
+                      href={`/shop?category=${cat.category.toLowerCase()}`}
+                      className="col-span-1 capitalize"
+                      onClick={() => onUpdateActiveLink("category")}
+                    >
+                      {cat.category}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <Link
