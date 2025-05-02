@@ -31,7 +31,7 @@ const HeroSection = () => {
     return () => clearInterval(autoPlay);
   }, [currentIndex]);
   return (
-    <div className="w-full h-[50vh] lg:h-[95vh]">
+    <div className="w-full h-[65vh] lg:h-[95vh]">
       <div className="w-full h-full">
         <div
           className="w-full h-full relative bg-cover bg-center bg-no-repeat duration-500"
@@ -44,7 +44,7 @@ const HeroSection = () => {
         ></div>
         <div className="w-full h-[50vh] lg:h-[95vh] top-0 flex flex-col items-center justify-center gap-5 absolute z-40 pt-5 lg:pt-6">
           <h1
-            className="text-3xl lg:text-5xl leading-[2.5rem] lg:leading-[4.5rem] font-medium text-white max-w-[90%] lg:max-w-[45%] text-center lg:uppercase"
+            className="text-2xl lg:text-4xl leading-[2.5rem] lg:leading-[4.5rem] font-medium text-white max-w-[90%] lg:max-w-[45%] text-center lg:uppercase"
             style={{ textShadow: "2px 2px #000" }}
           >
             Classic and Premium Collection
