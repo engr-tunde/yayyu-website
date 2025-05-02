@@ -57,10 +57,10 @@ const HeroSection = () => {
           </Link> */}
           <Link
             href="/shop"
-            className="block p-4 uppercase mb-2 text-2xl text-white group group-hover:text-yayyuYellow ease-in duration-200 font-[500]"
+            className="block p-4 uppercase mb-2 text-[18px] lg:text-[20px] text-white group group-hover:text-yayyuYellow ease-in duration-200 font-[500]"
           >
             <span style={{ textShadow: "2px 2px #000" }}>Shop Now</span>
-            <div className="h-[2px] w-[135px] bg-white group-hover:bg-yayyuYellow ease-in duration-200 border-b-[1px] border-b-[#000]"></div>
+            <div className="h-[2px] w-[105px] lg:w-[115px] bg-white group-hover:bg-yayyuYellow ease-in duration-200 border-b-[1px] border-b-[#000]"></div>
           </Link>
         </div>
       </div>
