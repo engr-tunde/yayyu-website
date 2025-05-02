@@ -211,6 +211,7 @@ const NavBar = () => {
                 >
                   {categories?.map((cat, i) => (
                     <Link
+                      key={i}
                       href={`/shop?category=${cat.category.toLowerCase()}`}
                       className="col-span-1 capitalize"
                       onClick={() => onUpdateActiveLink("category")}
