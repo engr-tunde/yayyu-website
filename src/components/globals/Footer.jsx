@@ -96,7 +96,7 @@ const Footer = () => {
       </div>
       <div className="border-[0.8px] lg:border-[0.6px] border-[#000000a5]"></div>
       <div className="text-center">
-        Copyright &copy; 2024.{" "}
+        Copyright &copy; 2025.{" "}
         <span className="font-semibold">{process.env.APP_NAME}</span>
       </div>
     </div>
