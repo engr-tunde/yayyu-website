@@ -214,7 +214,9 @@ const ShopPage = () => {
                   alt=""
                   className="shop-item-img"
                 />
-                <p className="text-[14px] uppercase">{item.item_name}</p>
+                <p className="text-[14px] uppercase text-center">
+                  {item.item_name}
+                </p>
                 {item.original_price != item.new_price ? (
                   <>
                     <span className="text-lg mb-[-6px] text-[#9a9a9a] line-through">
