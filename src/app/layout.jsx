@@ -46,9 +46,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
-        <meta name="theme-color" content="#FCBA41" />
-        <meta name="msapplication-navbutton-color" content="#FCBA41" />
-        <meta content="#FCBA41" name="msapplication-navbutton-color" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="msapplication-navbutton-color" content="#ffffff" />
+        <meta content="#ffffff" name="msapplication-navbutton-color" />
       </head>
       <body
         className={`${dm_sans.variable} ${dm_serif_display.variable} ${baskervville.variable} ${inter.variable}`}

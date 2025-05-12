@@ -43,7 +43,7 @@ const ExploreMore = () => {
                 {item.title}
               </p>
               <Link
-                href={`/shop?category=${item.title.toLowerCase()}`}
+                href={`/shop?category=${item.link}`}
                 className="hidden w-[180px] py-4 group-hover:block absolute top-[50%] dark-btn uppercase"
               >
                 Shop Now
@@ -69,7 +69,7 @@ const ExploreMore = () => {
                     {item.title}
                   </p>
                   <Link
-                    href={`/category/suit`}
+                    href={`/shop?category=${item.link}`}
                     className="hidden w-[180px] py-4 group-hover:block absolute dark-btn uppercase"
                   >
                     Shop Now
