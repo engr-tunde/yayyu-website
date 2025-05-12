@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const heroImages = [
-  { url: "hero-11.png" },
-  { url: "hero-22.png" },
-  { url: "hero-33.png" },
+  { url: "hero-111.png" },
+  { url: "hero-222.png" },
+  { url: "hero-333.png" },
 ];
 
 const HeroSection = () => {
@@ -44,8 +44,8 @@ const HeroSection = () => {
         ></div>
         <div className="w-full h-[65vh] lg:h-[95vh] top-0 flex flex-col items-center justify-center gap-5 absolute z-40 pt-10 lg:pt-6">
           <h1
-            className="text-2xl lg:text-4xl leading-[2.1rem] lg:leading-[4.5rem] font-medium text-white max-w-[80%] lg:max-w-[45%] text-center lg:uppercase"
-            style={{ textShadow: "2px 2px #000" }}
+            className="text-2xl lg:text-5xl leading-[2.1rem] lg:leading-[4.5rem] font-medium text-white max-w-[80%] lg:max-w-[45%] text-center lg:uppercase baskervville"
+            // style={{ textShadow: "2px 2px #000" }}
           >
             Classic and Premium Collection
           </h1>
@@ -59,7 +59,7 @@ const HeroSection = () => {
             href="/shop"
             className="block p-4 uppercase mb-2 text-[18px] lg:text-[20px] text-white group group-hover:text-yayyuYellow ease-in duration-200 font-[500]"
           >
-            <span style={{ textShadow: "2px 2px #000" }}>Shop Now</span>
+            <span>Shop Now</span>
             <div className="h-[2px] w-[105px] lg:w-[115px] bg-white group-hover:bg-yayyuYellow ease-in duration-200 border-b-[1px] border-b-[#000]"></div>
           </Link>
         </div>

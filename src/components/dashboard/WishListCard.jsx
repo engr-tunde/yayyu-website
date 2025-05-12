@@ -1,13 +1,13 @@
 import { formatter } from "@/lib/helpers";
 import Link from "next/link";
 
-const WishListCard = ({ item }) => {
+const WishListCard = ({ item, handleRemoveWishListItem }) => {
   return (
     <div className="p-2 lg:p-4 flex flex-col gap-[8px] w-full justify-between text-[#222] bp-[14px] border-[#D4D4D6] border-[1.5px] rounded-md">
       <div className="flex justify-between text-sm">
         <div className="flex gap-2 lg:gap-4">
           <img
-            src={item.img}
+            src={`${process.env.API_IMAGES}/products/${item.img}`}
             alt=""
             className="h-[70px] border-[1.5px] border-[#d7d7d7] px-[2px] rounded-md"
           />
@@ -32,7 +32,12 @@ const WishListCard = ({ item }) => {
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <div className="text-sm px-2 transparent-btn">Remove</div>
+        <div
+          className="text-sm px-2 transparent-btn"
+          onClick={() => handleRemoveWishListItem(item)}
+        >
+          Remove
+        </div>
         <Link href={`/${item.item_slug}`} className="dark-btn py-1 px-5">
           View
         </Link>

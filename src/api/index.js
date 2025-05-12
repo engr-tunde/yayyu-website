@@ -111,6 +111,15 @@ export const fetchDiscountData = () => {
   };
 };
 
+export const fetchUserDataIfAvailable = () => {
+  const { data, error, mutate } = useSWR("/user-profile/user", fetcher);
+  return {
+    user: data?.data,
+    userLoading: !error && !data,
+    userError: error,
+    mutateUser: mutate,
+  };
+};
 export const makeOrder = async (values) => {
   const result = await mutationRequest("/general/make-order", "post", values);
   return result;

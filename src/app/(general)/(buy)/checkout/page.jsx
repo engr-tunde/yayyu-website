@@ -1,15 +1,15 @@
 "use client";
 
-import { fetchDiscountData, fetchShippingData, makeOrder } from "@/api";
+import {
+  fetchDiscountData,
+  fetchShippingData,
+  fetchUserDataIfAvailable,
+  makeOrder,
+} from "@/api";
 import CheckoutItems from "@/components/checkout/CheckoutItems";
 import CheckoutPaymentMethodCard from "@/components/checkout/CheckoutPaymentMethodCard";
 import CheckoutTotalCard from "@/components/checkout/CheckoutTotalCard";
 import ErrorWidget from "@/components/globals/ErrorWidget";
-import CheckBox from "@/components/globals/form/CheckBox";
-import InputField from "@/components/globals/form/InputField";
-import SelectCountryField from "@/components/globals/form/SelectCountryField";
-import SelectStateField from "@/components/globals/form/SelectStateField";
-import SubmitButton from "@/components/globals/form/SubmitButton";
 import Loader from "@/components/globals/Loader";
 import { useAppContext } from "@/context";
 import {
@@ -17,13 +17,18 @@ import {
   formatter,
   successNotification,
 } from "@/lib/helpers";
-import CustomFormik from "@/lib/utils/CustomFormik";
-import { orderValues } from "@/lib/utils/initialValues";
 import { validateMakeOrder } from "@/lib/utils/validate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import FormInputField from "@/components/globals/form/FormInputField";
+import FormSelectField from "@/components/globals/form/FormSelectField";
+import { countryList, stateList } from "@/lib/data";
+import FormSubmitButton from "@/components/globals/form/FormSubmitButton";
 
 const CheckoutPage = () => {
   const [original_total, setOriginal_total] = useState(0);
@@ -79,16 +84,36 @@ const CheckoutPage = () => {
     // calculateTotalFee,
   ]);
 
-  const initialValues = orderValues();
-  const validationSchema = validateMakeOrder();
+  const [data, setdata] = useState();
+  const { user, userLoading, userError } = fetchUserDataIfAvailable();
+  console.log("user", user);
+  useEffect(() => {
+    if (user) {
+      setdata(user);
+    }
+  }, [user]);
 
-  const handleSubmit = async (values) => {
+  const setShippingData = (item) => {
+    setShipping(item);
+    successNotification(`Deliverying to ${item.location}`);
+  };
+
+  const validate = validateMakeOrder(countryList, stateList);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(validate),
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
     console.log(values);
 
     if (!shipping.location.length) {
       errorNotification("Please select Shipping Method");
     }
-
     if (itemsInCart.length > 0) {
       const payload = {
         ...values,
@@ -117,68 +142,125 @@ const CheckoutPage = () => {
         errorNotification(error?.response?.data?.error);
       }
     }
-  };
+  });
 
-  console.log("totalPrice", totalPrice);
-  console.log("subtotal", subtotal);
-  console.log("shipping", shipping);
-  console.log("original_total", original_total);
-
-  const setShippingData = (item) => {
-    setShipping(item);
-    successNotification(`Deliverying to ${item.location}`);
-  };
   return (
     <div className="pt-[70px] ">
       <div className="container px-5 lg:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          <CustomFormik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
+        <form onSubmit={onSubmit}>
+          <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="col-span-1 lg:pe-9 lg:border-r-[1.5px] border-[#DEDEDE] py-20">
               <div className="flex items-center justify-between mb-6">
                 <h1 className="text-xl font-semibold">Contact</h1>
-                <Link href="/login" className="text-md">
-                  Login
-                </Link>
+                {!data ? (
+                  <Link href="/login" className="text-md">
+                    Login
+                  </Link>
+                ) : null}
               </div>
 
               <div className="py-2">
-                {/* <CustomFormik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              > */}
                 <div className="grid grid-cols-2 gap-y-4 gap-x-3">
-                  <InputField name="email" placeholder="Email" full={true} />
-                  <InputField name="phone" placeholder="Phone" full={true} />
-                  <CheckBox
-                    name="sign_up"
-                    placeholder="Sign up for order updates, exclusive offers and news on WhatsApp and/or Email"
+                  <FormInputField
+                    name="email"
+                    placeholder="Email"
+                    defaultValue={data?.email}
+                    register={register}
+                    error={errors?.email}
                     full={true}
                   />
+                  <FormInputField
+                    name="phone"
+                    placeholder="Phone"
+                    defaultValue={data?.phone}
+                    register={register}
+                    error={errors?.phone}
+                    full={true}
+                  />
+
+                  <div className="col-span-2 w-full flex items-center gap-[10px]">
+                    <input
+                      id="sign_up"
+                      type="checkbox"
+                      className="border rounded-md p-3 h-5 w-5"
+                    />
+                    <label
+                      htmlFor="sign_up"
+                      className="text-xs text-[#636060] font-semibold"
+                    >
+                      Sign up for order updates, exclusive offers and news on
+                      WhatsApp and/or Email
+                    </label>
+                  </div>
 
                   <div className="col-span-2 mt-8 mb-2">
                     <h1 className="text-xl font-semibold">Delivery</h1>
                   </div>
-                  <SelectCountryField name="country" full={true} />
-                  <InputField name="first_name" placeholder="First name" />
-                  <InputField name="last_name" placeholder="Last name" />
-                  <InputField
+                  <FormSelectField
+                    label="Country"
+                    name="country"
+                    defaultValue={data?.country}
+                    register={register}
+                    error={errors?.country}
+                    options={countryList}
+                    selected={data?.country}
+                    full={true}
+                  />
+                  <FormInputField
+                    name="first_name"
+                    placeholder="First Name"
+                    defaultValue={data?.first_name}
+                    register={register}
+                    error={errors?.first_name}
+                  />
+                  <FormInputField
+                    name="last_name"
+                    placeholder="Last Name"
+                    defaultValue={data?.last_name}
+                    register={register}
+                    error={errors?.last_name}
+                  />
+                  <FormInputField
                     name="address"
                     placeholder="Address"
+                    defaultValue={data?.address}
+                    register={register}
+                    error={errors?.address}
                     full={true}
                   />
-                  <InputField
+                  <FormInputField
                     name="apartment"
                     placeholder="Apartment"
+                    defaultValue={data?.apartment}
+                    register={register}
+                    error={errors?.apartment}
                     full={true}
                   />
-                  <InputField name="city" placeholder="City" full={true} />
-                  <SelectStateField name="state" />
-                  <InputField name="postal_code" placeholder="Postal Code" />
+                  <FormInputField
+                    name="city"
+                    placeholder="City"
+                    defaultValue={data?.city}
+                    register={register}
+                    error={errors?.city}
+                    full={true}
+                  />
+                  <FormSelectField
+                    label="Select State"
+                    name="state"
+                    defaultValue={data?.state}
+                    register={register}
+                    error={errors?.state}
+                    options={stateList}
+                    selected={data?.state}
+                  />
+                  <FormInputField
+                    name="postal_code"
+                    placeholder="Postal Code"
+                    defaultValue={data?.postal_code}
+                    register={register}
+                    error={errors?.postal_code}
+                  />
+
                   <div className="col-span-2 mt-8 mb-2">
                     <h1 className="text-xl font-semibold">Shipping method</h1>
                   </div>
@@ -191,12 +273,12 @@ const CheckoutPage = () => {
                           key={i}
                           className={
                             shipping.location === item.location
-                              ? "cursor-pointer w-full border-[7px] border-[#242424] py-1 lg:py-2 px-3 flex justify-between items-center"
-                              : "cursor-pointer w-full border-[2px] border-[#dedede] py-1 lg:py-2 px-3 flex justify-between items-center"
+                              ? "cursor-pointer w-full border-[7px] border-[#242424] py-1 px-3 flex justify-between items-center"
+                              : "cursor-pointer w-full border-[2px] border-[#dedede] py-1 px-3 flex justify-between items-center"
                           }
                         >
                           <div className="flex gap-3 lg:gap-5 items-center">
-                            <div className="h-[23px] w-[23px] border-black border-[5px] rounded-full"></div>
+                            <div className="h-[18px] w-[18px] border-black border-[5px] rounded-full"></div>
                             <span className="text-[12px] text-sm text-[#636060]">
                               {item.location} ({item.delivery_duration}{" "}
                               delivery)
@@ -215,33 +297,31 @@ const CheckoutPage = () => {
 
                   <CheckoutPaymentMethodCard />
 
-                  {/* <div className="hidden lg:block mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer">
-                    Pay
-                  </div> */}
-                  <SubmitButton
-                    title="Pay"
+                  <FormSubmitButton
+                    title="Pay Desktop"
                     className="hidden lg:block mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer"
                   />
                 </div>
-                {/* </CustomFormik> */}
               </div>
             </div>
 
             <div className="col-span-1 lg:ps-12 pb-20 lg:pt-20">
               <CheckoutItems groupedBy={groupedBy} />
 
-              <CustomFormik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              >
+              <div>
                 <div className="mt-9 mb-9 flex justify-between">
                   <div className="w-[70%]">
-                    <InputField name="coupon" placeholder="Discount code" />
+                    <FormInputField
+                      name="coupon"
+                      placeholder="Discount code"
+                      defaultValue={data?.coupon}
+                      register={register}
+                      error={errors?.coupon}
+                    />
                   </div>
                   <div className="w-[28%] transparent-btn py-3">Apply</div>
                 </div>
-              </CustomFormik>
+              </div>
 
               {/* <CheckoutTotalCard
               subtotal={subtotal}
@@ -269,7 +349,7 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              <div className="lg:hidden col-span-2 mt-10 mb-2">
+              <div className="lg:hidden col-span-2 mt-8 mb-2">
                 <h1 className="text-xl font-semibold mb-2">Payment</h1>
                 <p className="text-sm text-[#636060]">
                   All transactions are secure and encrypted.
@@ -287,16 +367,13 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* <div className="lg:hidden mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer">
-                Pay
-              </div> */}
-              <SubmitButton
-                title="Pay"
+              <FormSubmitButton
+                title="Pay Mobile"
                 className="lg:hidden mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer"
               />
             </div>
-          </CustomFormik>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

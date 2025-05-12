@@ -1,10 +1,11 @@
 "use client";
+
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import React from "react";
 import SectionTitle from "./SectionTitle";
 import { exploreMoreData } from "@/lib/data";
 import Link from "next/link";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 
 const ExploreMore = () => {
   const responsive = {
@@ -38,7 +39,7 @@ const ExploreMore = () => {
               className="group col-span-1 w-full h-full relative flex items-center justify-center group-hover:scale-150"
             >
               <img src={item.img} alt="" className="w-full" />
-              <p className="absolute top-[50%] text-white text-[32px] uppercase group-hover:hidden font-[400]">
+              <p className="absolute top-[50%] text-white text-[32px] uppercase group-hover:hidden font-[400] baskervville">
                 {item.title}
               </p>
               <Link

@@ -58,10 +58,10 @@ export const otpValues = () => {
   return initialValues;
 };
 
-export const orderValues = () => {
+export const orderValues = (userData) => {
   const initialValues = {
-    email: "",
-    phone: "",
+    email: userData ? userData.email : "",
+    phone: userData ? userData.phone : "",
     country: "",
     first_name: "",
     last_name: "",

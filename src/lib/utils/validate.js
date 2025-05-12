@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { z } from "zod";
 
 export const validateLogin = () => {
   const validationSchema = yup.object().shape({
@@ -92,20 +93,16 @@ export const validateOtp = () => {
   return validationSchema;
 };
 
-export const validateMakeOrder = () => {
-  const phoneRegExp = /^[\d|\+|\(]+[\)|\d|\s|-]*[\d]$/;
-  const validationSchema = yup.object({
-    email: yup.string().email("Invalid email").required("Email is missing"),
-    phone: yup
-      .string()
-      .matches(phoneRegExp, "Invalid phone number provided")
-      .required("Phone number is missing"),
-    country: yup.string().trim().required("In which country are you located?"),
-    first_name: yup.string().trim().required("First name is missing!"),
-    last_name: yup.string().trim().required("Last name is missing!"),
-    address: yup.string().trim().required("Delivery address is missing!"),
-    city: yup.string().trim().required("Delivery city is missing!"),
-    state: yup.string().trim().required("Delivery state is missing!"),
+export const validateMakeOrder = (country, state) =>
+  z.object({
+    email: z.string().email({ message: "Invalid email adress" }),
+    phone: z.coerce.number().min(1, { message: "Phone number is missing!" }),
+    country: z.enum(country, { message: "In which country are you located?" }),
+    first_name: z.string().min(1, { message: "First name is missing!" }),
+    last_name: z.string().min(1, { message: "Last name is missing!" }),
+    address: z.string().min(1, { message: "Delivery address is missing!" }),
+    apartment: z.string().optional(),
+    city: z.string().min(1, { message: "Delivery city is missing!" }),
+    state: z.enum(state, { message: "Delivery state is missing!" }),
+    postal_code: z.string().optional(),
   });
-  return validationSchema;
-};
