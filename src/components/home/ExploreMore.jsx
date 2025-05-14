@@ -64,7 +64,7 @@ const ExploreMore = () => {
                   key={i}
                   className="col-span-1 group w-full h-full relative flex items-center justify-center group-hover:scale-150"
                 >
-                  <img src="/images/explore-1.png" alt="" className="w-full" />
+                  <img src={item.img} alt="" className="w-full" />
                   <p className="absolute text-white text-[20px] uppercase font-[400] group-hover:hidden">
                     {item.title}
                   </p>

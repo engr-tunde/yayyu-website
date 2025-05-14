@@ -29,6 +29,7 @@ import FormInputField from "@/components/globals/form/FormInputField";
 import FormSelectField from "@/components/globals/form/FormSelectField";
 import { countryList, stateList } from "@/lib/data";
 import FormSubmitButton from "@/components/globals/form/FormSubmitButton";
+import { PaystackButton } from "react-paystack";
 
 const CheckoutPage = () => {
   const [original_total, setOriginal_total] = useState(0);
@@ -44,7 +45,6 @@ const CheckoutPage = () => {
   const { shippingData, shippingDataLoading, shippingDataError } =
     fetchShippingData();
   const { discountData } = fetchDiscountData();
-  console.log({ discountData });
 
   const { itemsInCart, setItemsInCart } = useAppContext();
 
@@ -84,9 +84,8 @@ const CheckoutPage = () => {
     // calculateTotalFee,
   ]);
 
-  const [data, setdata] = useState();
   const { user, userLoading, userError } = fetchUserDataIfAvailable();
-  console.log("user", user);
+
   useEffect(() => {
     if (user) {
       setdata(user);
@@ -107,15 +106,23 @@ const CheckoutPage = () => {
   } = useForm({
     resolver: zodResolver(validate),
   });
+  const [data, setdata] = useState();
+  const [email, setemail] = useState();
+  const [phone, setphone] = useState();
+  const [name, setname] = useState();
+  const [payload, setpayload] = useState();
+  const [showPaymentWindow, setshowPaymentWindow] = useState(false);
 
   const onSubmit = handleSubmit(async (values) => {
     console.log(values);
-
+    setemail(values.email);
+    setphone(values.phone);
+    setname(`${values.first_name} ${values.last_name}`);
     if (!shipping.location.length) {
       errorNotification("Please select Shipping Method");
     }
     if (itemsInCart.length > 0) {
-      const payload = {
+      const payload_data = {
         ...values,
         shipping_method: shipping.location,
         shipping_fee: Number(shipping.fee),
@@ -125,24 +132,45 @@ const CheckoutPage = () => {
         total_paid: Number(totalPrice),
         items: itemsInCart,
       };
-      console.log("payload", payload);
-      const response = await makeOrder(payload);
-      console.log(response);
-      try {
-        if (response.status === 200) {
-          const data = response.data;
-          successNotification(data.message);
-          localStorage.setItem("cart", []);
-          setItemsInCart([]);
-          setTimeout(() => router.push("/dashboard"), 1000);
-        } else {
-          errorNotification(response?.data?.error);
-        }
-      } catch (error) {
-        errorNotification(error?.response?.data?.error);
-      }
+      setpayload(payload_data);
+      setshowPaymentWindow(true);
     }
   });
+
+  const sendOrderToAPI = async (reference) => {
+    successNotification(
+      "Payment successfully completed. Submitting your order..."
+    );
+    payload.payment_reference = reference.trxref;
+    console.log("payload", payload);
+    const response = await makeOrder(payload);
+    console.log(response);
+    try {
+      if (response.status === 200) {
+        const data = response.data;
+        successNotification(data.message);
+        localStorage.setItem("cart", []);
+        setItemsInCart([]);
+        setTimeout(() => router.push("/dashboard"), 1000);
+      } else {
+        errorNotification(response?.data?.error);
+      }
+    } catch (error) {
+      errorNotification(error?.response?.data?.error);
+    }
+  };
+
+  const componentProps = {
+    reference: new Date().getTime().toString(),
+    email,
+    amount: Number(totalPrice * 100),
+    publicKey: "pk_test_c3981463baa273839ee6ac0df9a9d5e0b1e88af0",
+    key: "pk_test_c3981463baa273839ee6ac0df9a9d5e0b1e88af0",
+    text: "Make payment",
+    onSuccess: (reference) => sendOrderToAPI(reference),
+    onClose: () =>
+      successNotification("Are you sure you want to close this order?"),
+  };
 
   return (
     <div className="pt-[70px] ">
@@ -290,15 +318,15 @@ const CheckoutPage = () => {
                         </div>
                       ))}
                     {shippingDataLoading && <Loader />}
-                    {shippingDataError && (
+                    {/* {shippingDataError && (
                       <ErrorWidget error={shippingDataError} />
-                    )}
+                    )} */}
                   </div>
 
                   <CheckoutPaymentMethodCard />
 
                   <FormSubmitButton
-                    title="Pay Desktop"
+                    title="Pay"
                     className="hidden lg:block mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer"
                   />
                 </div>
@@ -368,12 +396,42 @@ const CheckoutPage = () => {
               </div>
 
               <FormSubmitButton
-                title="Pay Mobile"
+                title="Pay"
                 className="lg:hidden mt-5 col-span-2 py-[14px] uppercase w-full bg-black text-white text-[17px] lg:text-[20px] text-center hover:bg-yayyuYellow hover:text-white hover:font-semibold ease-in duration-300 cursor-pointer"
               />
             </div>
           </div>
         </form>
+
+        {
+          <div
+            className={
+              showPaymentWindow
+                ? "fixed z-[150] top-0 left-0 w-screen h-screen bg-black/80 flex justify-center items-center"
+                : "hidden"
+            }
+          >
+            <div className="w-[80%] lg:w-[50%] bg-white rounded-md p-4 lg:p-6 flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <div className="font-semibold">Pay for your order</div>
+                <div
+                  className="ps-2 pb-2 font-bold text-2xl cursor-pointer"
+                  onClick={() => setshowPaymentWindow(false)}
+                >
+                  x
+                </div>
+              </div>
+              <div className="text-sm mb-10">
+                Complete your order by making the payment now. Click the button
+                below
+              </div>
+              <PaystackButton
+                className="block w-full px-4 py-2 bg-yayyuYellow text-black rounded-md hover:scale-105 ease-in duration-200 cursor-pointer"
+                {...componentProps}
+              />
+            </div>
+          </div>
+        }
       </div>
     </div>
   );
